@@ -1,0 +1,6 @@
+.next/
+node_modules/
+public/
+prisma/migrations/
+node_modules/zod/
+

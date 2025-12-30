@@ -1,0 +1,27 @@
+model Job {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  city        String?
+  isRemote    Boolean  @default(false)
+
+  status      String   @default("active")
+
+  salaryMin   Int?
+  salaryMax   Int?
+
+  ownerId     Int
+  owner       User     @relation(fields: [ownerId], references: [id])
+
+  companyId   Int?
+  company     Company? @relation(fields: [companyId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([city])
+  @@index([ownerId, createdAt])
+}
+

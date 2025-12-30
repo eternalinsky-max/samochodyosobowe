@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id          String   @id
+  name        String
+  ownerId     String
+  website     String?
+  logoUrl     String?
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  ratingAvg   Float    @default(0)
+  ratingCount Int      @default(0)
+  ratingSum   Int      @default(0)
+  bayesScore  Float    @default(0)
+  User        User     @relation(fields: [ownerId], references: [id])
+  Job         Job[]
+}
+
+model Job {
+  id          String   @id
+  title       String
+  description String
+  city        String?
+  isRemote    Boolean  @default(false)
+  salaryMin   Int?
+  salaryMax   Int?
+  tagsCsv     String   @default("")
+  status      String   @default("ACTIVE")
+  companyId   String
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  ratingAvg   Float    @default(0)
+  ratingCount Int      @default(0)
+  ratingSum   Int      @default(0)
+  bayesScore  Float    @default(0)
+  Company     Company  @relation(fields: [companyId], references: [id])
+  User        User     @relation(fields: [ownerId], references: [id])
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([city])
+  @@index([ownerId, createdAt])
+  @@index([companyId])
+}
+
+model Review {
+  id            String   @id
+  authorId      String
+  targetType    String
+  targetId      String
+  ratingOverall Int
+  ratingPay     Int?
+  ratingCulture Int?
+  ratingBalance Int?
+  ratingClarity Int?
+  text          String
+  isHidden      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  User          User     @relation(fields: [authorId], references: [id])
+
+  @@unique([authorId, targetType, targetId])
+  @@index([targetType, targetId])
+  @@index([authorId])
+}
+
+model User {
+  id                     String    @id
+  firebaseUid            String    @unique
+  email                  String?   @unique
+  displayName            String?
+  phone                  String?   @unique
+  photoUrl               String?
+  isAdmin                Boolean   @default(false)
+  createdAt              DateTime  @default(now())
+  ratingWorkerAvg        Float     @default(0)
+  ratingWorkerCount      Int       @default(0)
+  ratingWorkerSum        Int       @default(0)
+  ratingWorkerBayesScore Float     @default(0)
+  Company                Company[]
+  Job                    Job[]
+  Review                 Review[]
+}
+
+model ContactMessageLog {
+  id                String    @id @default(cuid())
+  createdAt         DateTime  @default(now())
+  ip                String
+  userAgent         String?
+  name              String
+  email             String
+  message           String
+  messageLen        Int
+  spam              Boolean   @default(false)
+  rateLimited       Boolean   @default(false)
+  success           Boolean   @default(false)
+  provider          String?
+  providerMessageId String?
+  error             String?
+  retryAfterSec     Int?
+  deletedAt         DateTime?
+
+  @@index([createdAt])
+  @@index([ip])
+  @@index([deletedAt])
+}
