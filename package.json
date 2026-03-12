@@ -19,6 +19,6 @@
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy",
 
-    "postinstall": "prisma generate"
+    "postinstall": "npx prisma generate"
   }
 }
