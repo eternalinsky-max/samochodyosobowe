@@ -20,6 +20,7 @@ service-account.json
 serviceAccountKey.json
 service-accountKey.json
 service-account.b64.txt
+service-account-cars.json
 
 # ===============================
 # Кеш і білди
@@ -59,4 +60,3 @@ Thumbs.db
 # Misc
 # ===============================
 .vercel/
-service-account-cars.json
