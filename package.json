@@ -4,15 +4,12 @@
   "private": true,
 
   "scripts": {
-    "fix-admin-imports": "node scripts/fix-admin-imports.js",
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
 
-    "lint": "eslint src --ext .js,.jsx --max-warnings=0",
+    "lint": "eslint src --ext .js,.jsx",
     "lint:fix": "eslint src --ext .js,.jsx --fix",
-
-    "format": "prettier \"src/**/*.{js,jsx,css,md}\" --write",
 
     "migrate": "prisma migrate dev",
     "prisma:seed": "node prisma/seed.js",
@@ -50,7 +47,6 @@
     "eslint": "8.57.1",
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^9.1.2",
-    "eslint-import-resolver-jsconfig": "^1.1.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
