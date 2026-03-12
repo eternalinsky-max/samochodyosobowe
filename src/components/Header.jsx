@@ -57,30 +57,33 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Лого */}
+          {/* Logo */}
           <Link
             href="/"
             className="flex items-center gap-2 text-xl font-bold text-brand-600"
           >
-            <img
-              src="/favicon.svg"
-              alt="proponujeprace.pl"
-              className="h-8 w-8"
-            />
-            <span>proponujeprace.pl</span>
+<img
+  src="/logo-128x128.png"
+  alt="samohodyosobowe.pl"
+  className="h-9 w-9"
+  width="36"
+  height="36"
+/>
+            <span>samohodyosobowe.pl</span>
           </Link>
 
-          {/* Десктоп навігація */}
+          {/* Desktop navigation */}
           <nav className="hidden gap-6 md:flex" aria-label="Główna nawigacja">
-            <NavLink href="/">Strona główna</NavLink>
-            <NavLink href="/jobs">Oferty pracy</NavLink>
-            <NavLink href="/post-job">Dodaj ofertę</NavLink>
+            <NavLink href="/">Start</NavLink>
+            <NavLink href="/cars">Samochody</NavLink>
+            <NavLink href="/brands">Marki</NavLink>
+            <NavLink href="/compare">Porównanie</NavLink>
             <NavLink href="/contact">Kontakt</NavLink>
             <NavLink href="/terms">Regulamin</NavLink>
             <NavLink href="/privacy">Polityka prywatności</NavLink>
           </nav>
 
-          {/* Праворуч: гість або користувач */}
+          {/* Right: guest or user */}
           <div className="hidden items-center gap-3 md:flex">
             {loading ? (
               <div className="h-9 w-24 animate-pulse rounded-lg bg-gray-100" />
@@ -115,7 +118,7 @@ export default function Header() {
                   </svg>
                 </button>
 
-                {/* Дропдаун */}
+                {/* Dropdown */}
                 <div
                   id="user-menu"
                   role="menu"
@@ -133,11 +136,11 @@ export default function Header() {
                     Mój profil
                   </Link>
                   <Link
-                    href="/my-jobs"
+                    href="/profile"
                     className="block rounded-lg px-3 py-2 hover:bg-gray-50"
                     role="menuitem"
                   >
-                    Moje oferty
+                    Moje oceny i komentarze
                   </Link>
                   <div className="my-1 border-t" />
                   <LogoutButton />
@@ -150,7 +153,7 @@ export default function Header() {
             )}
           </div>
 
-          {/* Бургер для мобільного */}
+          {/* Burger for mobile */}
           <button
             type="button"
             className="inline-flex items-center justify-center rounded-lg border p-2 hover:bg-gray-50 md:hidden"
@@ -185,7 +188,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Оверлей */}
+      {/* Overlay */}
       <div
         className={`fixed inset-0 bg-black/30 transition-opacity md:hidden ${
           open
@@ -202,7 +205,7 @@ export default function Header() {
         }}
       />
 
-      {/* Мобільне меню */}
+      {/* Mobile menu */}
       <nav
         id="mobile-menu"
         aria-label="Menu mobilne"
@@ -214,13 +217,16 @@ export default function Header() {
       >
         <div className="flex flex-col gap-1 p-3">
           <NavLink href="/" onClick={() => setOpen(false)}>
-            Strona główna
+            Start
           </NavLink>
-          <NavLink href="/jobs" onClick={() => setOpen(false)}>
-            Oferty pracy
+          <NavLink href="/cars" onClick={() => setOpen(false)}>
+            Samochody
           </NavLink>
-          <NavLink href="/post-job" onClick={() => setOpen(false)}>
-            Dodaj ofertę
+          <NavLink href="/brands" onClick={() => setOpen(false)}>
+            Marki
+          </NavLink>
+          <NavLink href="/compare" onClick={() => setOpen(false)}>
+            Porównanie
           </NavLink>
           <NavLink href="/contact" onClick={() => setOpen(false)}>
             Kontakt
@@ -246,11 +252,11 @@ export default function Header() {
                 Mój profil
               </Link>
               <Link
-                href="/my-jobs"
+                href="/profile"
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2 hover:bg-gray-50"
               >
-                Moje oferty
+                Moje oceny i komentarze
               </Link>
               <LogoutButton className="w-full rounded-lg px-3 py-2 text-left hover:bg-gray-50" />
             </>

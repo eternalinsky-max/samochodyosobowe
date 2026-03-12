@@ -1,0 +1,4 @@
+make,model,trim,yearFrom,yearTo,bodyType,fuelType,gearbox,powerHp,engineCc,rangeKm,basePricePln
+BMW,3 Series,320d xDrive,2019,,SEDAN,DIESEL,AUTOMATIC,190,1995,,180000
+BMW,3 Series,330e,2020,,SEDAN,PHEV,AUTOMATIC,292,1998,50,220000
+Toyota,Corolla,1.8 Hybrid,2018,,HATCHBACK,HYBRID,AUTOMATIC,122,1798,,120000

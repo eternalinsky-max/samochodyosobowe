@@ -1,31 +1,27 @@
 // src/lib/firebase.js
-'use client';
+import { initializeApp, getApp, getApps } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
-import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
-import { auth, googleProvider } from './firebase-client';
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
 
-// Опційно: підказати Google показувати вибір акаунта
-googleProvider.setCustomParameters({ prompt: 'select_account' });
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-/** Logowanie Google z fallbackiem na redirect (Safari/WebView itp.) */
+export const auth = getAuth(app);
+export const storage = getStorage(app);
+
+const provider = new GoogleAuthProvider();
+
 export async function loginWithGoogle() {
-  try {
-    return await signInWithPopup(auth, googleProvider);
-  } catch (err) {
-    // Якщо це не «popup blocked / not supported», пробуємо пробросити реальну помилку
-    const code = err?.code || '';
-    const popupIssues = [
-      'auth/popup-blocked',
-      'auth/popup-closed-by-user',
-      'auth/cancelled-popup-request',
-      'auth/operation-not-supported-in-this-environment',
-    ];
-    if (!popupIssues.includes(code)) throw err;
-
-    // Фолбек: редірект (працює у Safari/WebView)
-    await signInWithRedirect(auth, googleProvider);
-    return; // після повернення з редіректу обробляй getRedirectResult() там, де потрібно
-  }
+  const result = await signInWithPopup(auth, provider);
+  return result.user;
 }
 
-export { auth, googleProvider };
+export default app;

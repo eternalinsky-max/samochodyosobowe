@@ -1,10 +1,9 @@
 // src/lib/auth.js
-// eslint-disable-next-line import/no-unresolved
 import 'server-only';
-
 import * as admin from 'firebase-admin';
 
 const GLOBAL_KEY = '__FIREBASE_ADMIN_APP__';
+const APP_NAME = 'admin'; // щоб не взяти "чужий" app
 
 function getServiceAccount() {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
@@ -38,20 +37,33 @@ function getServiceAccount() {
   throw new Error('FIREBASE_SERVICE_ACCOUNT_BASE64 or FIREBASE_SERVICE_ACCOUNT_JSON is missing');
 }
 
+function assertCreds(creds) {
+  if (!creds?.projectId || !creds?.clientEmail || !creds?.privateKey) {
+    throw new Error('Firebase service account creds are incomplete (projectId/clientEmail/privateKey required)');
+  }
+}
+
 function initAdmin() {
   if (globalThis[GLOBAL_KEY]) return globalThis[GLOBAL_KEY];
 
   const creds = getServiceAccount();
-  const app =
-    admin.apps.length > 0
-      ? admin.app()
-      : admin.initializeApp({
-          credential: admin.credential.cert({
-            projectId: creds.projectId,
-            clientEmail: creds.clientEmail,
-            privateKey: creds.privateKey,
-          }),
-        });
+  assertCreds(creds);
+
+  let app;
+  try {
+    app = admin.app(APP_NAME);
+  } catch {
+    app = admin.initializeApp(
+      {
+        credential: admin.credential.cert({
+          projectId: creds.projectId,
+          clientEmail: creds.clientEmail,
+          privateKey: creds.privateKey,
+        }),
+      },
+      APP_NAME
+    );
+  }
 
   globalThis[GLOBAL_KEY] = app;
   return app;
@@ -66,7 +78,9 @@ export async function verifyFirebaseToken(input, { checkRevoked = false } = {}) 
     const token = input.startsWith('Bearer ') ? input.slice(7).trim() : input.trim();
     if (!token) return null;
     return await adminAuth.verifyIdToken(token, checkRevoked);
-  } catch {
+  } catch (err) {
+    // не логуй токен, тільки тип помилки
+    console.warn('[auth] verifyIdToken failed:', err?.code || err?.message || 'unknown');
     return null;
   }
 }
