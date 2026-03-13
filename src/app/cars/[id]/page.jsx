@@ -99,7 +99,7 @@ function SpecCard({ label, value }) {
     </div>
   );
 }
-export const dynamic = "force-dynamic"
+
 
 export default async function CarDetailsPage({ params }) {
   const car = await prisma.carListing.findUnique({
