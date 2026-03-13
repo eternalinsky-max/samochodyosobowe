@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
@@ -97,6 +99,7 @@ function SpecCard({ label, value }) {
     </div>
   );
 }
+export const dynamic = "force-dynamic"
 
 export default async function CarDetailsPage({ params }) {
   const car = await prisma.carListing.findUnique({
