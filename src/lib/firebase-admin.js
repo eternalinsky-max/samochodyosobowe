@@ -6,13 +6,13 @@ let app = null;
 let adminAuth = null;
 let adminDb = null;
 
-const hasFirebaseConfig =
+const hasConfig =
   process.env.FIREBASE_PROJECT_ID &&
   process.env.FIREBASE_CLIENT_EMAIL &&
   process.env.FIREBASE_PRIVATE_KEY;
 
-if (hasFirebaseConfig) {
-  const firebaseAdminConfig = {
+if (hasConfig) {
+  const config = {
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
@@ -21,14 +21,14 @@ if (hasFirebaseConfig) {
   app =
     getApps().length === 0
       ? initializeApp({
-          credential: cert(firebaseAdminConfig),
+          credential: cert(config),
         })
       : getApps()[0];
 
   adminAuth = getAuth(app);
   adminDb = getFirestore(app);
 } else {
-  console.warn("Firebase Admin not initialized (missing env vars)");
+  console.warn("Firebase Admin disabled (missing env vars)");
 }
 
 export { adminAuth, adminDb };
@@ -36,19 +36,14 @@ export { adminAuth, adminDb };
 export async function verifyIdTokenFromRequest(req) {
   if (!adminAuth) return null;
 
-  const authHeader = req.headers.get("authorization");
+  const header = req.headers.get("authorization");
+  if (!header || !header.startsWith("Bearer ")) return null;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return null;
-  }
-
-  const token = authHeader.split("Bearer ")[1];
+  const token = header.split("Bearer ")[1];
 
   try {
-    const decoded = await adminAuth.verifyIdToken(token);
-    return decoded;
-  } catch (error) {
-    console.error("Token verification failed", error);
+    return await adminAuth.verifyIdToken(token);
+  } catch {
     return null;
   }
 }
