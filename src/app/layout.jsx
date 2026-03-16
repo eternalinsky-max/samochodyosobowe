@@ -4,6 +4,7 @@ import AuthSessionSync from "@/components/AuthSessionSync";
 import SiteFooter from "@/components/Footer";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Samochody osobowe – katalog",
   description: "Katalog nowych samochodów w Polsce",

@@ -1,5 +1,5 @@
 import PremiumHero from '@/components/PremiumHero';
-
+export const dynamic = "force-dynamic";
 export default function HomePage() {
   return (
     <>

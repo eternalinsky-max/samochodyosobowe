@@ -1,6 +1,8 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 function pln(n) {
   if (n == null) return "—";
   return new Intl.NumberFormat("pl-PL", {

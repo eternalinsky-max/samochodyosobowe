@@ -7,6 +7,7 @@ import UserRatingBadge from '@/components/UserRatingBadge';
 import { auth } from '@/lib/firebase';
 import { useAuthUser } from '@/lib/useAuthUser';
 
+export const dynamic = "force-dynamic";
 export default function ProfilePage() {
   const { user, loading } = useAuthUser();
   const [me, setMe] = useState(null);

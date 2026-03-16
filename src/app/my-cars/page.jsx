@@ -1,6 +1,8 @@
 // src/app/my-cars/page.jsx
 import MyCarsClient from "./MyCarsClient";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Moje ogłoszenia – SamochodyOsobowe.pl",
 };
