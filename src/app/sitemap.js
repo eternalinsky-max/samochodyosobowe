@@ -8,29 +8,34 @@ export default async function sitemap() {
 
   const urls = [];
 
-  // головна сторінка
+  // головна
   urls.push({
     url: `${baseUrl}`,
     lastModified: new Date(),
   });
 
-  // список авто
+  // каталог авто
   urls.push({
     url: `${baseUrl}/cars`,
     lastModified: new Date(),
   });
 
-  // сторінка брендів
+  // бренди
   urls.push({
     url: `${baseUrl}/brands`,
     lastModified: new Date(),
   });
 
-  // всі марки
+  // всі марки та моделі
   const makes = await prisma.carMake.findMany({
-    include: {
-      models: true
-    }
+    select: {
+      slug: true,
+      models: {
+        select: {
+          slug: true,
+        },
+      },
+    },
   });
 
   for (const make of makes) {
@@ -41,26 +46,30 @@ export default async function sitemap() {
     });
 
     for (const model of make.models) {
-
       urls.push({
         url: `${baseUrl}/brands/${make.slug}/${model.slug}`,
         lastModified: new Date(),
       });
-
     }
 
   }
 
-  // всі оголошення авто
+  // всі авто
   const cars = await prisma.carListing.findMany({
-    select: { id: true }
+    where: { isActive: true },
+    select: {
+      id: true,
+      updatedAt: true,
+    },
   });
 
   for (const car of cars) {
+
     urls.push({
       url: `${baseUrl}/cars/${car.id}`,
-      lastModified: new Date(),
+      lastModified: car.updatedAt || new Date(),
     });
+
   }
 
   return urls;

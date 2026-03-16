@@ -3,9 +3,19 @@ import NavBar from "@/components/NavBar";
 import AuthSessionSync from "@/components/AuthSessionSync";
 import SiteFooter from "@/components/Footer";
 import { headers } from "next/headers";
+import { Inter } from "next/font/google";
+import Script from "next/script";
 
 export const dynamic = "force-dynamic";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata = {
+  metadataBase: new URL("https://samochodyosobowe.pl"),
+
   title: "Samochody osobowe – katalog",
   description: "Katalog nowych samochodów w Polsce",
 
@@ -23,9 +33,16 @@ export const metadata = {
     title: "Samochody osobowe – katalog",
     description: "Katalog nowych samochodów w Polsce",
     type: "website",
-    url: "https://samohodyosobowe.pl",
-    siteName: "samohodyosobowe.pl",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "samohodyosobowe.pl" }],
+    url: "https://samochodyosobowe.pl",
+    siteName: "samochodyosobowe.pl",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "samochodyosobowe.pl",
+      },
+    ],
   },
 
   twitter: {
@@ -42,11 +59,9 @@ function MainShell({ children }) {
   const isHome = pathname === "/";
 
   if (isHome) {
-    // Full-bleed для hero
     return <main>{children}</main>;
   }
 
-  // Контейнер для інших сторінок: темний фон + "premium surface"
   return (
     <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6">
       <div className="surface rounded-2xl p-4 sm:p-6">{children}</div>
@@ -59,21 +74,21 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="pl" className="dark">
-      <head>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_ID}', { anonymize_ip: true });
-            `,
-          }}
+      <body className={`${inter.className} min-h-screen text-slate-100`}>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
         />
-      </head>
 
-      <body className="min-h-screen text-slate-100">
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}', { anonymize_ip: true });
+          `}
+        </Script>
+
         <AuthSessionSync />
         <NavBar />
         <MainShell>{children}</MainShell>
