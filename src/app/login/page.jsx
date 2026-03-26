@@ -1,78 +1,31 @@
-'use client';
+"use client";
 
-import { onAuthStateChanged,signOut } from 'firebase/auth';
-import { useEffect, useState } from 'react';
-
-import { auth,loginWithGoogle } from '@/lib/firebase';
+import SignInButton from "@/components/SignInButton";
 
 export default function LoginPage() {
-  const [me, setMe] = useState(null);
-  const [err, setErr] = useState(null);
-  const [loadingGoogle, setLoadingGoogle] = useState(false);
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        localStorage.removeItem('idToken');
-        setMe(null);
-        return;
-      }
-      try {
-        const token = await user.getIdToken();
-        localStorage.setItem('idToken', token);
-        const r = await fetch('/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` },
-          cache: 'no-store',
-        });
-        const data = await r.json();
-        if (!r.ok) throw new Error(data?.error || `HTTP ${r.status}`);
-        setMe(data);
-        setErr(null);
-      } catch (e) {
-        setErr(e.message);
-      }
-    });
-    return () => unsub();
-  }, []);
-
-  async function handleGoogle() {
-    try {
-      setErr(null);
-      setLoadingGoogle(true);
-      await loginWithGoogle();
-    } catch (e) {
-      setErr(e.message || 'Logowanie przez Google nie powiodło się');
-    } finally {
-      setLoadingGoogle(false);
-    }
-  }
-
   return (
-    <section className="mx-auto max-w-xl space-y-6 px-4 py-6">
-      <h1 className="text-2xl font-bold">Zaloguj się</h1>
+    <main className="mx-auto max-w-xl px-4 py-16">
 
-      <div className="space-y-4 rounded-xl border bg-white p-6 shadow-soft">
-        <button
-          onClick={handleGoogle}
-          disabled={loadingGoogle}
-          className="btn btn-primary w-full justify-center"
-        >
-          {loadingGoogle ? 'Logowanie…' : 'Zaloguj przez Google'}
-        </button>
+      <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
 
-        {err && <p className="mt-2 text-sm text-red-600">{err}</p>}
+        <h1 className="text-2xl font-semibold text-white text-center">
+          Zaloguj się
+        </h1>
+
+        <p className="mt-2 text-sm text-slate-400 text-center">
+          Wybierz sposób logowania
+        </p>
+
+        <div className="mt-6 space-y-4">
+          <SignInButton />
+        </div>
+
+        <div className="mt-6 text-xs text-slate-500 text-center">
+          Logując się akceptujesz regulamin i politykę prywatności
+        </div>
+
       </div>
 
-      {me && (
-        <div className="rounded-xl border bg-white p-6 shadow-soft">
-          <div>
-            <b>Zalogowano jako:</b> {me.displayName || me.email || 'Użytkownik'}
-          </div>
-          <button onClick={() => signOut(auth)} className="btn btn-ghost mt-3">
-            Wyloguj
-          </button>
-        </div>
-      )}
-    </section>
+    </main>
   );
 }

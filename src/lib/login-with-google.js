@@ -1,26 +1,41 @@
-// src/lib/login-with-google.js
-'use client';
-/* eslint-env browser */
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
-import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
-
-import { auth, googleProvider } from '@/lib/firebase';
-
-/**
- * Логін через Google:
- * 1) основний шлях — popup;
- * 2) fallback — redirect (для Safari/WebView/COOP).
- */
 export async function loginWithGoogle() {
   try {
-    return await signInWithPopup(auth, googleProvider);
-  } catch (err) {
-    // У браузерному середовищі надійно відкочуємось до redirect.
-    if (typeof window !== 'undefined') {
-      await signInWithRedirect(auth, googleProvider);
+    const auth = getAuth();
+
+    const provider = new GoogleAuthProvider();
+
+    provider.setCustomParameters({
+      prompt: "select_account",
+    });
+
+    const result = await signInWithPopup(auth, provider);
+
+    // 🔥 user
+    const user = result.user;
+
+    if (!user) {
+      throw new Error("No user returned from Google");
+    }
+
+    // 🔥 force refresh token (важливо!)
+    await user.getIdToken(true);
+
+    // 🔥 redirect після логіну
+    window.location.href = "/my-cars";
+
+    return user;
+
+  } catch (error) {
+    console.error("Google login error:", error);
+
+    // ❗ важливо — норм UX
+    if (error.code === "auth/popup-closed-by-user") {
       return;
     }
-    // Якщо викликнули не з браузера — прокидуємо помилку далі.
-    throw err;
+
+    alert("Nie udało się zalogować przez Google");
+    throw error;
   }
 }
