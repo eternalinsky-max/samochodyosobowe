@@ -3,6 +3,7 @@ import Link from "next/link";
 export default function PremiumHero() {
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-black">
+      
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -11,11 +12,8 @@ export default function PremiumHero() {
         }}
       />
 
-      {/* Fallback overlay (якщо картинки нема — буде гарний фон) */}
-      <div className="absolute inset-0 bg-gray-900/40" />
-
-      {/* Gradient overlay (ефект преміум як BMW) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
+      {/* LIGHT gradient (не вбиває картинку) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl items-center px-4 sm:px-6 lg:px-8 pt-24">

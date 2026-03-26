@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthUser } from "@/lib/useAuthUser";
+import CarImagesManager from "@/components/CarImagesManager";
 
 const MAKES = {
   BMW: ["X1", "X3", "X5", "X6", "X7", "3 Series", "5 Series"],
@@ -74,8 +75,10 @@ export default function PostCarClient() {
     bodyType: "",
   });
 
-  const models = MAKES[form.make] || [];
   const [busy, setBusy] = useState(false);
+  const [createdCarId, setCreatedCarId] = useState(null);
+
+  const models = MAKES[form.make] || [];
 
   const canSubmit = useMemo(() => {
     return !loading && !!user && form.title && form.make && form.model && !busy;
@@ -104,9 +107,9 @@ export default function PostCarClient() {
     setBusy(true);
 
     try {
-      const token = await user.getIdToken();
+      const token = await user.getIdToken(true); // 🔥 FIX
 
-      await fetch("/api/cars", {
+      const res = await fetch("/api/cars", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -115,7 +118,17 @@ export default function PostCarClient() {
         body: JSON.stringify(payload),
       });
 
-      router.push("/cars");
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Błąd tworzenia ogłoszenia");
+      }
+
+      // ✅ показуємо upload
+      setCreatedCarId(data.id);
+
+    } catch (e) {
+      alert(e.message || "Błąd");
     } finally {
       setBusy(false);
     }
@@ -135,164 +148,86 @@ export default function PostCarClient() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
         {/* TITLE */}
-
         <div className="sm:col-span-2">
           <label className="text-sm font-medium text-white">Tytuł *</label>
-          <input
-            name="title"
-            value={form.title}
-            onChange={onChange}
-            className={inputStyle}
-          />
+          <input name="title" value={form.title} onChange={onChange} className={inputStyle} />
         </div>
 
-        {/* MARKA */}
-
+        {/* MAKE */}
         <div>
           <label className="text-sm font-medium text-white">Marka *</label>
-
           <select
             name="make"
             value={form.make}
             onChange={(e) =>
-              setForm((p) => ({
-                ...p,
-                make: e.target.value,
-                model: "",
-              }))
+              setForm((p) => ({ ...p, make: e.target.value, model: "" }))
             }
             className={selectStyle}
           >
-            <option className="bg-slate-900 text-white" value="">
-              Wybierz markę
-            </option>
-
+            <option value="">Wybierz markę</option>
             {Object.keys(MAKES).map((make) => (
-              <option key={make} value={make} className="bg-slate-900 text-white">
-                {make}
-              </option>
+              <option key={make} value={make}>{make}</option>
             ))}
           </select>
         </div>
 
         {/* MODEL */}
-
         <div>
           <label className="text-sm font-medium text-white">Model *</label>
-
-          <select
-            name="model"
-            value={form.model}
-            onChange={onChange}
-            className={selectStyle}
-          >
-            <option className="bg-slate-900 text-white" value="">
-              Wybierz model
-            </option>
-
+          <select name="model" value={form.model} onChange={onChange} className={selectStyle}>
+            <option value="">Wybierz model</option>
             {models.map((m) => (
-              <option key={m} value={m} className="bg-slate-900 text-white">
-                {m}
-              </option>
+              <option key={m} value={m}>{m}</option>
             ))}
           </select>
         </div>
 
         {/* YEAR */}
-
         <div>
           <label className="text-sm font-medium text-white">Rok</label>
-          <input
-            name="year"
-            value={form.year}
-            onChange={onChange}
-            className={inputStyle}
-          />
+          <input name="year" value={form.year} onChange={onChange} className={inputStyle} />
         </div>
 
         {/* PRICE */}
-
         <div>
           <label className="text-sm font-medium text-white">Cena (PLN)</label>
-          <input
-            name="pricePln"
-            value={form.pricePln}
-            onChange={onChange}
-            className={inputStyle}
-          />
+          <input name="pricePln" value={form.pricePln} onChange={onChange} className={inputStyle} />
         </div>
 
         {/* BODY */}
-
         <div>
           <label className="text-sm font-medium text-white">Typ nadwozia</label>
-
-          <select
-            name="bodyType"
-            value={form.bodyType}
-            onChange={onChange}
-            className={selectStyle}
-          >
-            <option className="bg-slate-900 text-white" value="">
-              —
-            </option>
-
+          <select name="bodyType" value={form.bodyType} onChange={onChange} className={selectStyle}>
+            <option value="">—</option>
             {BODY_TYPES.map((v) => (
-              <option key={v} value={v} className="bg-slate-900 text-white">
-                {BODY_LABELS[v]}
-              </option>
+              <option key={v} value={v}>{BODY_LABELS[v]}</option>
             ))}
           </select>
         </div>
 
         {/* FUEL */}
-
         <div>
           <label className="text-sm font-medium text-white">Paliwo</label>
-
-          <select
-            name="fuelType"
-            value={form.fuelType}
-            onChange={onChange}
-            className={selectStyle}
-          >
-            <option className="bg-slate-900 text-white" value="">
-              —
-            </option>
-
+          <select name="fuelType" value={form.fuelType} onChange={onChange} className={selectStyle}>
+            <option value="">—</option>
             {FUEL_TYPES.map((v) => (
-              <option key={v} value={v} className="bg-slate-900 text-white">
-                {FUEL_LABELS[v]}
-              </option>
+              <option key={v} value={v}>{FUEL_LABELS[v]}</option>
             ))}
           </select>
         </div>
 
         {/* GEARBOX */}
-
         <div>
           <label className="text-sm font-medium text-white">Skrzynia biegów</label>
-
-          <select
-            name="gearbox"
-            value={form.gearbox}
-            onChange={onChange}
-            className={selectStyle}
-          >
-            <option className="bg-slate-900 text-white" value="">
-              —
-            </option>
-
+          <select name="gearbox" value={form.gearbox} onChange={onChange} className={selectStyle}>
+            <option value="">—</option>
             {GEARBOX_TYPES.map((v) => (
-              <option key={v} value={v} className="bg-slate-900 text-white">
-                {GEARBOX_LABELS[v]}
-              </option>
+              <option key={v} value={v}>{GEARBOX_LABELS[v]}</option>
             ))}
           </select>
         </div>
 
-        {/* BUTTON */}
-
+        {/* SUBMIT */}
         <div className="sm:col-span-2 flex justify-end pt-3">
           <button
             type="submit"
@@ -302,6 +237,13 @@ export default function PostCarClient() {
             {busy ? "Zapisywanie..." : "Dodaj auto"}
           </button>
         </div>
+
+        {/* 🔥 IMAGES MANAGER */}
+        {createdCarId && (
+          <div className="sm:col-span-2 mt-6">
+            <CarImagesManager carId={createdCarId} />
+          </div>
+        )}
 
       </div>
     </form>
