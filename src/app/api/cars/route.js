@@ -12,16 +12,9 @@ function toInt(v) {
 
 export async function POST(req) {
   try {
-    const auth = await verifyIdTokenFromRequest(req);
-
-    if (!auth.ok) {
-      return NextResponse.json(
-        { ok: false, error: auth.error || "Unauthorized" },
-        { status: auth.status || 401 }
-      );
-    }
-
-    const firebaseUid = auth.decoded.uid;
+    // ✅ FIX AUTH (без auth.ok)
+    const decoded = await verifyIdTokenFromRequest(req);
+    const firebaseUid = decoded.uid;
 
     const body = await req.json().catch(() => ({}));
 
@@ -29,21 +22,15 @@ export async function POST(req) {
     const make = String(body.make || "").trim();
     const model = String(body.model || "").trim();
 
-    if (!title || !make || !model) {
-      return NextResponse.json(
-        { ok: false, error: "title, make, model are required" },
-        { status: 400 }
-      );
-    }
+    // ✅ дозволяємо draft (OLX-style)
+    const safeTitle = title || "Nowe ogłoszenie";
+    const safeMake = make || "BMW";
+    const safeModel = model || "X5";
 
+    // 👤 user
     const dbUser = await prisma.user.upsert({
       where: { firebaseUid },
-      update: {
-        email: body.email ? String(body.email) : undefined,
-        displayName: body.displayName ? String(body.displayName) : undefined,
-        photoUrl: body.photoUrl ? String(body.photoUrl) : undefined,
-        phone: body.phone ? String(body.phone) : undefined,
-      },
+      update: {},
       create: {
         firebaseUid,
         email: body.email ? String(body.email) : null,
@@ -51,20 +38,22 @@ export async function POST(req) {
         photoUrl: body.photoUrl ? String(body.photoUrl) : null,
         phone: body.phone ? String(body.phone) : null,
       },
-      select: { id: true, firebaseUid: true },
+      select: { id: true },
     });
 
+    // 🚗 create car
     const car = await prisma.carListing.create({
       data: {
         user: {
           connect: { id: dbUser.id },
         },
 
-        title,
+        title: safeTitle,
         description: body.description ? String(body.description) : null,
 
-        make,
-        model,
+        make: safeMake,
+        model: safeModel,
+
         year: toInt(body.year),
         mileageKm: toInt(body.mileageKm),
         pricePln: toInt(body.pricePln),
@@ -91,8 +80,14 @@ export async function POST(req) {
       },
     });
 
-    return NextResponse.json({ ok: true, car }, { status: 201 });
-
+    return NextResponse.json(
+      {
+        ok: true,
+        id: car.id, // 🔥 важливо для фронта
+        car,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("POST /api/cars ERROR:", error);
 

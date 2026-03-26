@@ -8,10 +8,9 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState("");
 
-  const [url, setUrl] = useState("");
   const [items, setItems] = useState(initialImages);
-
   const [files, setFiles] = useState([]);
+
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({});
 
@@ -19,13 +18,13 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
   const [err, setErr] = useState("");
   const [info, setInfo] = useState("");
 
-  // 🔥 AUTH (FIX TOKEN)
+  // 🔐 AUTH
   useEffect(() => {
     const unsub = auth?.onAuthStateChanged?.(async (u) => {
       setUser(u ?? null);
 
       if (u?.getIdToken) {
-        const t = await u.getIdToken(true); // ✅ FIX
+        const t = await u.getIdToken(true);
         setToken(t || "");
       } else {
         setToken("");
@@ -37,12 +36,11 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
 
   const canEdit = !!token;
 
+  // 📸 PREVIEW
   const previews = useMemo(() => {
     return files.map((f) => ({
       name: f.name,
       url: URL.createObjectURL(f),
-      size: f.size,
-      type: f.type,
     }));
   }, [files]);
 
@@ -52,7 +50,16 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
     };
   }, [previews]);
 
-  // 🔥 AUTO LOAD
+  // 🚫 БЕЗ carId
+  if (!carId) {
+    return (
+      <div className="text-sm text-gray-500 mt-4">
+        Najpierw zapisz auto, aby dodać zdjęcia.
+      </div>
+    );
+  }
+
+  // 🔄 LOAD
   useEffect(() => {
     if (token && carId) {
       refresh();
@@ -64,7 +71,6 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
 
     setLoading(true);
     setErr("");
-    setInfo("");
 
     try {
       const res = await fetch(`/api/cars/${carId}/images`, {
@@ -73,95 +79,33 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
       });
 
       const data = await res.json().catch(() => null);
-
-      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+      if (!res.ok) throw new Error(data?.error || "Load error");
 
       setItems(Array.isArray(data?.items) ? data.items : []);
     } catch (e) {
-      setErr(e?.message || "Nie udało się załadować zdjęć.");
+      setErr(e.message);
     } finally {
       setLoading(false);
     }
   }
 
-  async function addByUrl(e) {
-    e.preventDefault();
-    setErr("");
-    setInfo("");
-
-    if (!token) return setErr("Zaloguj się, aby dodawać zdjęcia.");
-
-    const u = url.trim();
-    if (!u) return setErr("Podaj URL zdjęcia.");
-    if (!/^https?:\/\/.+/i.test(u))
-      return setErr("Nieprawidłowy URL.");
-
-    setLoading(true);
-
-    try {
-      const res = await fetch(`/api/cars/${carId}/images`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-id-token": token,
-        },
-        body: JSON.stringify({ url: u }),
-      });
-
-      const data = await res.json().catch(() => null);
-
-      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
-
-      setUrl("");
-      setInfo("Zdjęcie dodane.");
-      await refresh();
-    } catch (e) {
-      setErr(e?.message || "Błąd dodawania zdjęcia.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function removeImage(imageId) {
-    setErr("");
-    setInfo("");
-
-    if (!token) return setErr("Zaloguj się.");
-
-    setLoading(true);
-
-    try {
-      const res = await fetch(
-        `/api/cars/${carId}/images?imageId=${encodeURIComponent(imageId)}`,
-        {
-          method: "DELETE",
-          headers: { "x-id-token": token },
-        }
-      );
-
-      const data = await res.json().catch(() => null);
-
-      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
-
-      setInfo("Usunięto.");
-      await refresh();
-    } catch (e) {
-      setErr(e?.message || "Błąd usuwania.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  // 📂 SELECT FILES
   function onPickFiles(e) {
     setErr("");
     setInfo("");
 
     const list = Array.from(e.target.files || []);
-    const onlyImages = list.filter((f) => f.type.startsWith("image/"));
+
+    const onlyImages = list.filter(
+      (f) =>
+        f.type.startsWith("image/") &&
+        f.size < 5 * 1024 * 1024 // 5MB
+    );
 
     setFiles(onlyImages);
   }
 
+  // 🔑 OWNER CHECK
   async function ensureOwnerDoc(freshToken) {
     const res = await fetch(`/api/cars/${carId}/owner`, {
       method: "POST",
@@ -174,6 +118,7 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
     }
   }
 
+  // 🚀 UPLOAD
   async function uploadAll() {
     setErr("");
     setInfo("");
@@ -213,7 +158,7 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
 
         const url = await getDownloadURL(task.snapshot.ref);
 
-        await fetch(`/api/cars/${carId}/images`, {
+        const res = await fetch(`/api/cars/${carId}/images`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -221,6 +166,11 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
           },
           body: JSON.stringify({ url }),
         });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => null);
+          throw new Error(data?.error || "API ERROR");
+        }
       }
 
       setFiles([]);
@@ -229,27 +179,92 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
       await refresh();
     } catch (e) {
       console.error(e);
-      setErr(e?.message || "Upload error");
+      setErr(e.message || "Upload error");
     } finally {
       setUploading(false);
     }
   }
 
+  // ❌ DELETE
+  async function removeImage(imageId) {
+    setErr("");
+
+    try {
+      const res = await fetch(
+        `/api/cars/${carId}/images?imageId=${encodeURIComponent(imageId)}`,
+        {
+          method: "DELETE",
+          headers: { "x-id-token": token },
+        }
+      );
+
+      if (!res.ok) throw new Error("Delete error");
+
+      await refresh();
+    } catch (e) {
+      setErr(e.message);
+    }
+  }
+
   return (
-    <section className="rounded-2xl border border-white/20 bg-white/85 p-6">
-      <div className="text-sm font-semibold">Zdjęcia</div>
+    <section className="rounded-2xl border border-white/20 bg-white/85 p-6 mt-6">
+      <div className="text-sm font-semibold mb-3">Zdjęcia</div>
 
-      <input type="file" multiple onChange={onPickFiles} />
+      {/* FILE INPUT */}
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={onPickFiles}
+      />
 
-      <button onClick={uploadAll} disabled={uploading}>
+      {/* PREVIEW */}
+      {previews.length > 0 && (
+        <div className="flex gap-2 mt-3 flex-wrap">
+          {previews.map((p) => (
+            <img
+              key={p.name}
+              src={p.url}
+              className="h-20 w-20 object-cover rounded"
+            />
+          ))}
+        </div>
+      )}
+
+      {/* UPLOAD BUTTON */}
+      <button
+        onClick={uploadAll}
+        disabled={uploading || !canEdit}
+        className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+      >
         {uploading ? "Uploading..." : "Upload"}
       </button>
 
+      {/* PROGRESS */}
+      {Object.entries(progress).map(([name, pct]) => (
+        <div key={name} className="text-xs mt-1">
+          {name} — {pct}%
+        </div>
+      ))}
+
+      {/* ERRORS */}
+      {err && <div className="text-red-500 mt-2 text-sm">{err}</div>}
+      {info && <div className="text-green-600 mt-2 text-sm">{info}</div>}
+
+      {/* EXISTING IMAGES */}
       <div className="grid grid-cols-3 gap-2 mt-4">
         {items.map((img) => (
-          <div key={img.id}>
-            <img src={img.url} className="h-24 w-full object-cover" />
-            <button onClick={() => removeImage(img.id)}>X</button>
+          <div key={img.id} className="relative">
+            <img
+              src={img.url}
+              className="h-24 w-full object-cover rounded"
+            />
+            <button
+              onClick={() => removeImage(img.id)}
+              className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 rounded"
+            >
+              X
+            </button>
           </div>
         ))}
       </div>

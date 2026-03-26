@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 
+import CarImagesManager from "@/components/CarImagesManager"; // 🔥 ДОДАНО
+
 function toStr(v) {
   return v == null ? "" : String(v);
 }
@@ -12,7 +14,9 @@ function toStr(v) {
 function Field({ label, children, full = false }) {
   return (
     <div className={full ? "sm:col-span-2" : ""}>
-      <label className="mb-2 block text-sm font-medium text-white/80">{label}</label>
+      <label className="mb-2 block text-sm font-medium text-white/80">
+        {label}
+      </label>
       {children}
     </div>
   );
@@ -129,40 +133,17 @@ export default function CarEditClient({ car }) {
     "inline-flex h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white/40";
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href={`/cars/${car.id}`}
-          className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 backdrop-blur-md transition hover:bg-white/10 hover:text-white"
-        >
-          ← Wróć
-        </Link>
+    <div className="space-y-6">
 
-        <div className="text-sm font-semibold tracking-[0.18em] text-white/70">
-          EDYCJA OGŁOSZENIA
-        </div>
-      </div>
-
-      {err ? (
-        <div className="rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-300 backdrop-blur-md">
-          {err}
-        </div>
-      ) : null}
-
-      {info ? (
-        <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-300 backdrop-blur-md">
-          {info}
-        </div>
-      ) : null}
-
+      {/* FORM */}
       <form onSubmit={save} className={card}>
         <div className="grid gap-4 sm:grid-cols-2">
+
           <Field label="Tytuł" full>
             <input
               className={input}
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              placeholder="np. BMW 3 320d M Pakiet"
               required
             />
           </Field>
@@ -172,7 +153,6 @@ export default function CarEditClient({ car }) {
               className={input}
               value={form.make}
               onChange={(e) => setForm((f) => ({ ...f, make: e.target.value }))}
-              placeholder="BMW"
             />
           </Field>
 
@@ -181,119 +161,21 @@ export default function CarEditClient({ car }) {
               className={input}
               value={form.model}
               onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))}
-              placeholder="320d"
             />
           </Field>
 
-          <Field label="Rok">
+          <Field label="Cena">
             <input
               className={input}
-              inputMode="numeric"
-              value={form.year}
-              onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
-              placeholder="2018"
-            />
-          </Field>
-
-          <Field label="Przebieg (km)">
-            <input
-              className={input}
-              inputMode="numeric"
-              value={form.mileageKm}
-              onChange={(e) => setForm((f) => ({ ...f, mileageKm: e.target.value }))}
-              placeholder="120000"
-            />
-          </Field>
-
-          <Field label="Cena (PLN)">
-            <input
-              className={input}
-              inputMode="numeric"
               value={form.pricePln}
               onChange={(e) => setForm((f) => ({ ...f, pricePln: e.target.value }))}
-              placeholder="65000"
             />
           </Field>
 
-          <Field label="Miasto">
-            <input
-              className={input}
-              value={form.city}
-              onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
-              placeholder="Warszawa"
-            />
-          </Field>
-
-          <Field label="Paliwo">
-            <select
-              className={select}
-              value={form.fuelType}
-              onChange={(e) => setForm((f) => ({ ...f, fuelType: e.target.value }))}
-            >
-              <option value="">Wybierz</option>
-              <option value="PETROL">Benzyna</option>
-              <option value="DIESEL">Diesel</option>
-              <option value="HYBRID">Hybryda</option>
-              <option value="PHEV">PHEV</option>
-              <option value="ELECTRIC">Elektryczny</option>
-              <option value="LPG">LPG</option>
-              <option value="CNG">CNG</option>
-            </select>
-          </Field>
-
-          <Field label="Skrzynia">
-            <select
-              className={select}
-              value={form.gearbox}
-              onChange={(e) => setForm((f) => ({ ...f, gearbox: e.target.value }))}
-            >
-              <option value="">Wybierz</option>
-              <option value="MANUAL">Manual</option>
-              <option value="AUTOMATIC">Automat</option>
-            </select>
-          </Field>
-
-          <Field label="Nadwozie">
-            <select
-              className={select}
-              value={form.bodyType}
-              onChange={(e) => setForm((f) => ({ ...f, bodyType: e.target.value }))}
-            >
-              <option value="">Wybierz</option>
-              <option value="HATCHBACK">Hatchback</option>
-              <option value="SEDAN">Sedan</option>
-              <option value="WAGON">Kombi</option>
-              <option value="SUV">SUV</option>
-              <option value="COUPE">Coupe</option>
-              <option value="CONVERTIBLE">Kabriolet</option>
-              <option value="VAN">Van</option>
-              <option value="PICKUP">Pickup</option>
-            </select>
-          </Field>
-
-          <Field label="Opis" full>
-            <textarea
-              className={textarea}
-              value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="Opis samochodu..."
-            />
-          </Field>
-
-          <div className="sm:col-span-2">
-            <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/80 backdrop-blur-md">
-              <input
-                type="checkbox"
-                checked={form.isActive}
-                onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-              />
-              Aktywne ogłoszenie
-            </label>
-          </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <button type="submit" className={loading ? btnDisabled : btn} disabled={loading}>
+        <div className="mt-6 flex gap-3">
+          <button type="submit" className={loading ? btnDisabled : btn}>
             {loading ? "Zapisywanie…" : "Zapisz"}
           </button>
 
@@ -302,6 +184,10 @@ export default function CarEditClient({ car }) {
           </Link>
         </div>
       </form>
+
+      {/* 🔥 ФОТО З'ЯВЛЯЮТЬСЯ ТУТ */}
+      <CarImagesManager carId={car.id} />
+
     </div>
   );
 }
