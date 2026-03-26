@@ -1,22 +1,22 @@
-import { adminAuth } from "@/lib/firebase-admin";
+// src/lib/auth.js
+import { adminAuth } from "./firebase-admin";
 
-export async function verifyFirebaseToken(token) {
+export async function verifyFirebaseToken(req) {
+  const authHeader =
+    req.headers.get("authorization") ||
+    req.headers.get("Authorization");
+
+  if (!authHeader?.startsWith("Bearer ")) {
+    throw new Error("NO_TOKEN");
+  }
+
+  const token = authHeader.split("Bearer ")[1];
+
   try {
-    if (!token) return null;
-
-    if (!adminAuth) {
-      console.warn("Firebase admin not configured");
-      return null;
-    }
-
     const decoded = await adminAuth.verifyIdToken(token);
     return decoded;
   } catch (e) {
-    console.error("verifyFirebaseToken error:", e);
-    return null;
+    console.error("TOKEN ERROR:", e);
+    throw new Error("INVALID_TOKEN");
   }
-}
-
-export async function requireAdmin() {
-  return false;
 }

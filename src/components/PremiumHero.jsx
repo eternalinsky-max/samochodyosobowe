@@ -2,31 +2,49 @@ import Link from "next/link";
 
 export default function PremiumHero() {
   return (
-    <section className="relative min-h-[100vh] w-full overflow-hidden bg-black">
-      {/* Background */}
+    <section className="relative min-h-screen w-full overflow-hidden bg-black">
+      {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/hero.jpg')" }}
+        style={{
+          backgroundImage: "url('/images/hero.jpg')",
+        }}
       />
 
-      {/* Left overlay like BMW */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/0" />
+      {/* Fallback overlay (якщо картинки нема — буде гарний фон) */}
+      <div className="absolute inset-0 bg-gray-900/40" />
+
+      {/* Gradient overlay (ефект преміум як BMW) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex min-h-[100vh] max-w-6xl items-center px-4 sm:px-6 lg:px-8 pt-24">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl items-center px-4 sm:px-6 lg:px-8 pt-24">
         <div className="max-w-xl text-white">
-          <p className="text-sm tracking-[0.25em] text-white/80">NEUE KLASSE</p>
+          <p className="text-sm tracking-[0.25em] text-white/70">
+            SAUTOM PLATFORM
+          </p>
 
           <h1 className="mt-4 text-5xl font-light leading-tight sm:text-6xl">
-            WKROCZ W NOWĄ ERĘ.
+            Znajdź swoje idealne auto.
           </h1>
 
-          <div className="mt-10">
+          <p className="mt-6 text-lg text-white/80">
+            Nowoczesna platforma do wyszukiwania, porównywania i publikowania ogłoszeń motoryzacyjnych.
+          </p>
+
+          <div className="mt-10 flex gap-4">
             <Link
               href="/cars"
-              className="inline-flex items-center justify-center rounded-md bg-blue-600 px-7 py-4 text-sm font-medium text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400/70"
+              className="inline-flex items-center justify-center rounded-md bg-blue-600 px-7 py-4 text-sm font-medium text-white hover:bg-blue-500 transition"
             >
-              Poznaj katalog
+              Przeglądaj auta
+            </Link>
+
+            <Link
+              href="/post-car"
+              className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-sm font-medium text-white hover:bg-white/10 transition"
+            >
+              Dodaj ogłoszenie
             </Link>
           </div>
         </div>

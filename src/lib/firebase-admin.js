@@ -1,49 +1,38 @@
+// src/lib/firebase-admin.js
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { getFirestore } from "firebase-admin/firestore";
 
-let app = null;
-let adminAuth = null;
-let adminDb = null;
+let app;
 
-const hasConfig =
-  process.env.FIREBASE_PROJECT_ID &&
-  process.env.FIREBASE_CLIENT_EMAIL &&
-  process.env.FIREBASE_PRIVATE_KEY;
+if (!getApps().length) {
+  let serviceAccount;
 
-if (hasConfig) {
-  const config = {
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  };
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+    const json = Buffer.from(
+      process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
+      "base64"
+    ).toString("utf-8");
 
-  app =
-    getApps().length === 0
-      ? initializeApp({
-          credential: cert(config),
-        })
-      : getApps()[0];
-
-  adminAuth = getAuth(app);
-  adminDb = getFirestore(app);
-} else {
-  console.warn("Firebase Admin disabled (missing env vars)");
-}
-
-export { adminAuth, adminDb };
-
-export async function verifyIdTokenFromRequest(req) {
-  if (!adminAuth) return null;
-
-  const header = req.headers.get("authorization");
-  if (!header || !header.startsWith("Bearer ")) return null;
-
-  const token = header.split("Bearer ")[1];
-
-  try {
-    return await adminAuth.verifyIdToken(token);
-  } catch {
-    return null;
+    serviceAccount = JSON.parse(json);
+  } else if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+    serviceAccount = JSON.parse(
+      process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+    );
+  } else {
+    throw new Error(
+      "FIREBASE_SERVICE_ACCOUNT_BASE64 or JSON is missing"
+    );
   }
+
+  // 🔥 FIX для private_key
+  serviceAccount.private_key =
+    serviceAccount.private_key.replace(/\\n/g, "\n");
+
+  app = initializeApp({
+    credential: cert(serviceAccount),
+  });
+} else {
+  app = getApps()[0];
 }
+
+export const adminAuth = getAuth(app);

@@ -71,7 +71,7 @@ export default function MyCarsClient() {
     setErr("");
 
     try {
-      const token = await user.getIdToken?.();
+     const token = await user.getIdToken(true); // force refresh
       if (!token) throw new Error("Brak tokenu logowania. Zaloguj się ponownie.");
 
       const res = await fetch(`/api/my-cars?${query}`, {
