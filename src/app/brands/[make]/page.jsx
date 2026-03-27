@@ -132,7 +132,7 @@ export default async function BrandPage({ params, searchParams = {} }) {
     const q = new URLSearchParams(baseQs);
     q.set("page", String(p));
     const qs = q.toString();
-    return qs ? `/brands/${make.slug}?${qs}` : `/brands/${make.slug}`;
+    return qs ? `/brands/make/${make.slug}?${qs}` : `/brands/${make.slug}`;
   };
 
   return (
@@ -167,7 +167,7 @@ export default async function BrandPage({ params, searchParams = {} }) {
             {models.map((m) => (
               <Link
                 key={m.id}
-                href={`/brands/${make.slug}/${m.slug}`}
+                href={`/brands/make/${make.slug}/${m.slug}`}
                 className="rounded-xl border bg-white p-4 shadow-sm hover:bg-gray-50"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -258,7 +258,7 @@ export default async function BrandPage({ params, searchParams = {} }) {
                   </div>
 
                   <Link
-                    href={`/brands/${make.slug}/${t.model.slug}?trim=${t.id}`}
+                    href={`/brands/make/${make.slug}/${t.model.slug}?trim=${t.id}`}
                     className="text-sm text-blue-600 hover:underline"
                   >
                     Wersje →

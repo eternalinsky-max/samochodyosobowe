@@ -203,8 +203,8 @@ export default async function BrandModelPage({ params, searchParams = {} }) {
     q.set("page", String(p));
     const qs = q.toString();
     return qs
-      ? `/brands/${make.slug}/${model.slug}?${qs}`
-      : `/brands/${make.slug}/${model.slug}`;
+      ? `/brands/make/${make.slug}/${model.slug}?${qs}`
+      : `/brands/make/${make.slug}/${model.slug}`;
   };
 
   return (
@@ -215,7 +215,7 @@ export default async function BrandModelPage({ params, searchParams = {} }) {
             Marki
           </Link>
           <span className="mx-2">/</span>
-          <Link href={`/brands/${make.slug}`} className="hover:underline">
+          <Link href={`/brands/make/${make.slug}`} className="hover:underline">
             {make.name}
           </Link>
           <span className="mx-2">/</span>
@@ -236,7 +236,7 @@ export default async function BrandModelPage({ params, searchParams = {} }) {
           Brak wersji dla wybranych filtrów.
           <div className="mt-3">
             <Link
-              href={`/brands/${make.slug}`}
+              href={`/brands/make/${make.slug}`}
               className="text-blue-600 hover:underline"
             >
               Zobacz inne modele marki {make.name}

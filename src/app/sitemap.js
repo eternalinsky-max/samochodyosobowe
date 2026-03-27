@@ -41,13 +41,13 @@ export default async function sitemap() {
   for (const make of makes) {
 
     urls.push({
-      url: `${baseUrl}/brands/${make.slug}`,
+      url: `${baseUrl}/brands/make/${make.slug}`,
       lastModified: new Date(),
     });
 
     for (const model of make.models) {
       urls.push({
-        url: `${baseUrl}/brands/${make.slug}/${model.slug}`,
+        url: `${baseUrl}/brands/make/${make.slug}/${model.slug}`,
         lastModified: new Date(),
       });
     }
