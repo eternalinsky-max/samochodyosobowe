@@ -85,3 +85,40 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ error: "SERVER_ERROR" }, { status: 500 });
   }
 }
+// ✅ DELETE — видалення оголошення
+export async function DELETE(req, { params }) {
+  try {
+    const auth = await requireUser(req);
+    if (auth.error) return auth.error;
+
+    const user = auth.user;
+    const carId = params.id;
+
+    const car = await prisma.carListing.findUnique({
+      where: { id: carId },
+      select: { id: true, userId: true },
+    });
+
+    if (!car) {
+      return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    }
+    if (car.userId !== user.id) {
+      return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+    }
+
+    // Спочатку видаляємо зображення (foreign key)
+    await prisma.carListingImage.deleteMany({
+      where: { listingId: carId },
+    });
+
+    // Потім саме оголошення
+    await prisma.carListing.delete({
+      where: { id: carId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.error("DELETE /api/cars/[id] error:", e);
+    return NextResponse.json({ error: "SERVER_ERROR" }, { status: 500 });
+  }
+}
