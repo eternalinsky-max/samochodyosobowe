@@ -13,9 +13,18 @@ const MAKES = {
   Mercedes: ["A-Class", "C-Class", "E-Class", "GLC", "GLE"],
 };
 
-const BODY_TYPES = ["HATCHBACK","SEDAN","WAGON","SUV","COUPE","CONVERTIBLE","VAN","PICKUP"];
-const FUEL_TYPES = ["PETROL","DIESEL","HYBRID","PHEV","ELECTRIC","LPG","CNG"];
-const GEARBOX_TYPES = ["MANUAL","AUTOMATIC"];
+const BODY_TYPES = [
+  "HATCHBACK",
+  "SEDAN",
+  "WAGON",
+  "SUV",
+  "COUPE",
+  "CONVERTIBLE",
+  "VAN",
+  "PICKUP",
+];
+const FUEL_TYPES = ["PETROL", "DIESEL", "HYBRID", "PHEV", "ELECTRIC", "LPG", "CNG"];
+const GEARBOX_TYPES = ["MANUAL", "AUTOMATIC"];
 
 function toIntOrNull(v) {
   const n = parseInt(v, 10);
@@ -43,7 +52,7 @@ export default function PostCarClient() {
 
   const models = MAKES[form.make] || [];
 
-  // 🔥 AUTO CREATE (OLX STYLE)
+  // 🔥 авто‑створення чернетки оголошення
   useEffect(() => {
     async function init() {
       if (!user || createdCarId) return;
@@ -55,10 +64,7 @@ export default function PostCarClient() {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            headers: {
-  "content-type": "application/json",
-  authorization: `Bearer ${token}`,
-},
+            authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             title: "Nowe ogłoszenie",
@@ -69,6 +75,8 @@ export default function PostCarClient() {
 
         if (res.ok) {
           setCreatedCarId(data.id);
+        } else {
+          console.error("Create error:", data);
         }
       } catch (e) {
         console.error("AUTO CREATE ERROR", e);
@@ -76,7 +84,7 @@ export default function PostCarClient() {
     }
 
     init();
-  }, [user]);
+  }, [user, createdCarId]);
 
   const canSubmit = useMemo(() => {
     return !loading && !!user && createdCarId && !busy;
@@ -87,10 +95,9 @@ export default function PostCarClient() {
     setForm((p) => ({ ...p, [name]: value }));
   }
 
-  // 🔥 SAVE (PATCH instead of POST)
+  // 🔥 оновлення оголошення (PATCH замість POST)
   async function onSubmit(e) {
     e.preventDefault();
-
     if (!createdCarId) return;
 
     const payload = {
@@ -114,7 +121,7 @@ export default function PostCarClient() {
         method: "PATCH",
         headers: {
           "content-type": "application/json",
-          "x-id-token": token,
+          authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -125,7 +132,6 @@ export default function PostCarClient() {
       }
 
       router.push(`/cars/${createdCarId}`);
-
     } catch (e) {
       alert(e.message);
     } finally {
@@ -135,21 +141,24 @@ export default function PostCarClient() {
 
   const input =
     "mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 text-white px-3 py-2 text-sm";
-
   const select = input;
 
   return (
     <div className="space-y-6">
-
       <form
         onSubmit={onSubmit}
         className="rounded-2xl border border-slate-700 bg-slate-900 p-6"
       >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
           <div className="sm:col-span-2">
             <label className="text-white">Tytuł *</label>
-            <input name="title" value={form.title} onChange={onChange} className={input} />
+            <input
+              name="title"
+              value={form.title}
+              onChange={onChange}
+              className={input}
+              required
+            />
           </div>
 
           <div>
@@ -213,20 +222,16 @@ export default function PostCarClient() {
             <button
               type="submit"
               disabled={!canSubmit}
-              className="rounded-xl bg-blue-600 px-5 py-2 text-white"
+              className="rounded-xl bg-blue-600 px-5 py-2 text-white disabled:opacity-50"
             >
               {busy ? "Zapisywanie..." : "Zapisz ogłoszenie"}
             </button>
           </div>
-
         </div>
       </form>
 
-      {/* 🔥 ЗАВЖДИ Є UPLOAD */}
-      {createdCarId && (
-        <CarImagesManager carId={createdCarId} />
-      )}
-
+      {/* Покажемо менеджер зображень, як тільки створено carId */}
+      {createdCarId && <CarImagesManager carId={createdCarId} />}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 'use client';
 /* eslint-env browser */
 
@@ -17,7 +16,9 @@ function NavLink({ href, children, onClick }) {
     <Link
       href={href}
       onClick={onClick}
-      className={`nav-link ${active ? 'font-semibold text-brand-600' : ''}`}
+      className={`nav-link ${
+        active ? 'font-semibold text-blue-600' : ''
+      }`}
       aria-current={active ? 'page' : undefined}
     >
       {children}
@@ -49,8 +50,8 @@ export default function Header() {
 
   const avatarUrl =
     user?.photoURL ||
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      user?.displayName || 'U',
+    `[ui-avatars.com](https://ui-avatars.com/api/?name=${encodeURIComponent()
+      user?.displayName || 'U'
     )}&&background=E5EEF9&color=1D4ED8`;
 
   return (
@@ -60,16 +61,24 @@ export default function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 text-xl font-bold text-brand-600"
+            className="flex items-center gap-2 text-xl font-bold text-blue-600"
           >
-<img
-  src="/logo-128x128.png"
-  alt="samohodyosobowe.pl"
-  className="h-9 w-9"
-  width="36"
-  height="36"
-/>
-            <span>samohodyosobowe.pl</span>
+            <Image
+              src="/logo.png"          // повинен лежати в /public/logo.png
+              width={36}
+              height={36}
+              alt="SAUTOM logo"
+              priority
+              className="rounded-md object-contain"
+            />
+            <div className="leading-tight">
+              <div className="text-sm font-extrabold tracking-wider text-black">
+                SAUTOM
+              </div>
+              <div className="text-[11px] font-semibold tracking-widest text-gray-500">
+                samochody w Polsce
+              </div>
+            </div>
           </Link>
 
           {/* Desktop navigation */}
@@ -77,10 +86,9 @@ export default function Header() {
             <NavLink href="/">Start</NavLink>
             <NavLink href="/cars">Samochody</NavLink>
             <NavLink href="/brands">Marki</NavLink>
+            <NavLink href="/my-cars">Moje auta</NavLink>
             <NavLink href="/compare">Porównanie</NavLink>
             <NavLink href="/contact">Kontakt</NavLink>
-            <NavLink href="/terms">Regulamin</NavLink>
-            <NavLink href="/privacy">Polityka prywatności</NavLink>
           </nav>
 
           {/* Right: guest or user */}
@@ -225,17 +233,14 @@ export default function Header() {
           <NavLink href="/brands" onClick={() => setOpen(false)}>
             Marki
           </NavLink>
+          <NavLink href="/my-cars" onClick={() => setOpen(false)}>
+            Moje auta
+          </NavLink>
           <NavLink href="/compare" onClick={() => setOpen(false)}>
             Porównanie
           </NavLink>
           <NavLink href="/contact" onClick={() => setOpen(false)}>
             Kontakt
-          </NavLink>
-          <NavLink href="/terms" onClick={() => setOpen(false)}>
-            Regulamin
-          </NavLink>
-          <NavLink href="/privacy" onClick={() => setOpen(false)}>
-            Polityka prywatności
           </NavLink>
 
           <div className="my-2 border-t" />

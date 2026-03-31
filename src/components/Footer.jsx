@@ -6,16 +6,19 @@ export default function SiteFooter() {
   return (
     <footer className="mt-16 border-t bg-gray-900 text-gray-300">
       <div className="mx-auto max-w-6xl px-4 py-10">
-
+        
         {/* TOP */}
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
           
           {/* BRAND */}
           <div>
             <p className="text-lg font-semibold text-white">
-              samohodyosobowe.pl
+              SAUTOM
             </p>
-            <p className="mt-2 text-sm text-gray-400">
+            <p className="mt-1 text-sm font-medium text-gray-400">
+              samochody w Polsce
+            </p>
+            <p className="mt-3 text-sm text-gray-400">
               Katalog nowych samochodów dostępnych w Polsce.
             </p>
           </div>
@@ -60,7 +63,7 @@ export default function SiteFooter() {
         {/* BOTTOM */}
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-gray-800 pt-6 text-sm text-gray-500 sm:flex-row">
           <span>
-            © {new Date().getFullYear()} samohodyosobowe.pl
+            © {new Date().getFullYear()} sautom.pl
           </span>
           <span>
             Dane mają charakter informacyjny i nie stanowią oferty handlowej.

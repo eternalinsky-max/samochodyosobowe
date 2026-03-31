@@ -55,7 +55,7 @@ export async function GET(req, { params }) {
     if (car.userId !== me.id) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
     const images = await prisma.carListingImage.findMany({
-      where: { carListingId: carId },
+      where: { listingId: carId },
       orderBy: { sortOrder: "asc" },
       select: { id: true, url: true, sortOrder: true, createdAt: true },
     });
@@ -93,7 +93,7 @@ export async function POST(req, { params }) {
 
     // next sortOrder
     const last = await prisma.carListingImage.findFirst({
-      where: { carListingId: carId },
+      where: { listingId: carId },
       orderBy: { sortOrder: "desc" },
       select: { sortOrder: true },
     });
@@ -102,7 +102,7 @@ export async function POST(req, { params }) {
 
     const created = await prisma.carListingImage.create({
       data: {
-        carListingId: carId,
+        listingId: carId,
         url,
         sortOrder,
       },
@@ -139,10 +139,10 @@ export async function DELETE(req, { params }) {
     // ensure image belongs to this listing
     const img = await prisma.carListingImage.findUnique({
       where: { id: imageId },
-      select: { id: true, carListingId: true },
+      select: { id: true, listingId: true },
     });
 
-    if (!img || img.carListingId !== carId) {
+    if (!img || img.listingId !== carId) {
       return NextResponse.json({ error: "IMAGE_NOT_FOUND" }, { status: 404 });
     }
 

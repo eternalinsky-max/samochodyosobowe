@@ -15,6 +15,7 @@ export default function NavBar() {
   const isHome = pathname === "/";
 
   useEffect(() => setOpen(false), [pathname]);
+
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
@@ -26,6 +27,7 @@ export default function NavBar() {
       { href: "/", label: "Start" },
       { href: "/cars", label: "Samochody" },
       { href: "/brands", label: "Marki" },
+      { href: "/my-cars", label: "Moje auta" },
       { href: "/compare", label: "Porównanie" },
       { href: "/contact", label: "Kontakt" },
     ],
@@ -36,17 +38,15 @@ export default function NavBar() {
     "px-3 py-2 rounded-xl text-sm font-semibold transition " +
     "hover:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/10";
 
-  const isActive = (href) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
+  const isActive = (href) =>
+    href === "/" ? pathname === "/" : pathname?.startsWith(href);
 
   return (
     <>
       {/* NAVBAR */}
       <header
         className={
-          "sticky top-0 z-50 w-full " +
-          // темна “плівка” + blur
-          "backdrop-blur-xl " +
-          // на home робимо трохи прозоріше, щоб hero виглядав круто
+          "sticky top-0 z-50 w-full backdrop-blur-xl " +
           (isHome
             ? "bg-black/35 border-b border-white/10"
             : "bg-black/55 border-b border-white/10")
@@ -54,30 +54,30 @@ export default function NavBar() {
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              {/* якщо у тебе є файл лого, підстав тут */}
-              <div className="relative h-9 w-9 overflow-hidden rounded-xl border border-white/10 bg-white/5">
+            {/* LOGO */}
+            <Link href="/" className="group flex items-center gap-3">
+              <div className="relative flex items-center justify-center h-10 w-10 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
                 <Image
-                  src="/logo-128x128.png"
-                  alt="SAMOCHODY OSOBOWE"
-                  fill
+                  src="/logo.png"
+                  width={40}
+                  height={40}
+                  alt="SAUTOM logo"
                   className="object-contain p-1"
                   priority
                 />
               </div>
 
-              <div className="leading-tight">
-                <div className="text-sm font-extrabold tracking-wide text-white">
-                  SAMOCHODY
+              <div className="leading-tight select-none">
+                <div className="text-sm font-extrabold tracking-wider text-white transition-colors group-hover:text-sky-400">
+                  SAUTOM
                 </div>
-                <div className="text-[11px] font-semibold tracking-widest text-white/70">
-                  OSOBOWE.PL
+                <div className="text-[11px] font-semibold tracking-widest text-white/60">
+                  samochody w Polsce
                 </div>
               </div>
             </Link>
 
-            {/* Desktop nav */}
+            {/* Desktop menu */}
             <nav className="hidden md:flex items-center gap-1">
               {items.map((it) => (
                 <Link
@@ -96,28 +96,30 @@ export default function NavBar() {
               ))}
             </nav>
 
-            {/* Right */}
+            {/* Right side */}
             <div className="flex items-center gap-2">
-              {/* Mobile menu button */}
+              {/* Mobile button */}
               <button
                 type="button"
                 className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10"
                 aria-label="Menu"
                 onClick={() => setOpen((v) => !v)}
               >
-                <span className="text-lg leading-none">{open ? "×" : "☰"}</span>
+                <span className="text-lg leading-none">
+                  {open ? "×" : "☰"}
+                </span>
               </button>
 
               {/* User menu */}
-             <div className="px-1 py-1">
-  <UserMenu />
-</div>
+              <div className="px-1 py-1">
+                <UserMenu />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Mobile panel */}
-        {open ? (
+        {/* Mobile menu */}
+        {open && (
           <div className="md:hidden border-t border-white/10 bg-black/65 backdrop-blur-xl">
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-3 flex flex-col gap-1">
               {items.map((it) => (
@@ -136,11 +138,8 @@ export default function NavBar() {
               ))}
             </div>
           </div>
-        ) : null}
+        )}
       </header>
-
-      {/* На випадок якщо захочеш fixed замість sticky: тут можна додати spacer */}
-      {/* <div className="h-16" /> */}
     </>
   );
 }
