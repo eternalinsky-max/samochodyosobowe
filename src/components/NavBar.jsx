@@ -29,6 +29,7 @@ export default function NavBar() {
       { href: "/brands", label: "Marki" },
       { href: "/my-cars", label: "Moje auta" },
       { href: "/compare", label: "Porównanie" },
+      { href: "/news", label: "Aktualności" },
       { href: "/contact", label: "Kontakt" },
     ],
     []
@@ -43,7 +44,6 @@ export default function NavBar() {
 
   return (
     <>
-      {/* NAVBAR */}
       <header
         className={
           "sticky top-0 z-50 w-full backdrop-blur-xl " +
@@ -66,7 +66,6 @@ export default function NavBar() {
                   priority
                 />
               </div>
-
               <div className="leading-tight select-none">
                 <div className="text-sm font-extrabold tracking-wider text-white transition-colors group-hover:text-sky-400">
                   SAUTOM
@@ -98,7 +97,6 @@ export default function NavBar() {
 
             {/* Right side */}
             <div className="flex items-center gap-2">
-              {/* Mobile button */}
               <button
                 type="button"
                 className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10"
@@ -109,8 +107,6 @@ export default function NavBar() {
                   {open ? "×" : "☰"}
                 </span>
               </button>
-
-              {/* User menu */}
               <div className="px-1 py-1">
                 <UserMenu />
               </div>
@@ -143,5 +139,3 @@ export default function NavBar() {
     </>
   );
 }
-
-
