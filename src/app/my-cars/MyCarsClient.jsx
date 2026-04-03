@@ -235,7 +235,7 @@ export default function MyCarsClient() {
                       />
                     ) : null}
 
-                    <div className="absolute bottom-3 left-3 rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-slate-800 backdrop-blur">
+                    <div className="absolute bottom-3 left-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
                       {price}
                     </div>
                   </div>
