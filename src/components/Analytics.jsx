@@ -3,7 +3,7 @@
 import Script from 'next/script';
 
 // ⚠️ тимчасово жорстко вшиваємо ID
-const GA_ID = 'G-1N2EPPHB54';
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export default function Analytics() {
   if (!GA_ID) return null;

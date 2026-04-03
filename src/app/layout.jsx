@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 
-export const dynamic = "force-dynamic";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -70,7 +70,7 @@ function MainShell({ children }) {
 }
 
 export default function RootLayout({ children }) {
-  const GA_ID = "G-1N2EPPHB54";
+  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
     <html lang="pl" className="dark">
