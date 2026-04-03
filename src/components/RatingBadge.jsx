@@ -42,3 +42,5 @@ export default function RatingBadge({ avg = 0, count = 0, className = '' }) {
     </div>
   );
 }
+
+

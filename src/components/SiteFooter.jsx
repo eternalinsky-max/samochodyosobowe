@@ -39,7 +39,7 @@ export default function SiteFooter() {
     <footer className="mt-10 bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:flex sm:items-center sm:justify-between">
         <div className="text-sm">
-          <p className="font-medium text-white">proponujeprace.pl</p>
+          <p className="font-medium text-white">sautom.pl</p>
           <p className="text-gray-400">© {year} Wszystkie prawa zastrzeżone</p>
         </div>
 
@@ -93,3 +93,5 @@ export default function SiteFooter() {
     </footer>
   );
 }
+
+

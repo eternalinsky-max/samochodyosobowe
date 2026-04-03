@@ -44,3 +44,4 @@ export async function verifyIdTokenFromRequest(req) {
 
   return decoded;
 }
+

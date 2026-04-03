@@ -44,7 +44,7 @@ async function getUserPublic(id) {
 export async function generateMetadata({ params }) {
   const u = await getUserPublic(params.id);
   if (!u) return { title: 'Użytkownik nie został znaleziony' };
-  return { title: `${u.displayName || 'Użytkownik'} | proponujeprace.pl` };
+  return { title: `${u.displayName || 'Użytkownik'} | sautom.pl` };
 }
 
 export default async function UserProfilePublicPage({ params }) {

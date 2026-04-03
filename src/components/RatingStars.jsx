@@ -40,3 +40,5 @@ export default function RatingStars({ value = 0, onChange, size = 20, readOnly =
     </div>
   );
 }
+
+

@@ -9,3 +9,5 @@ import RatingBadge from '@/components/RatingBadge';
 export default function JobRatingBadge({ avg = 0, count = 0, className = '' }) {
   return <RatingBadge avg={Number(avg)} count={Number(count)} className={className} />;
 }
+
+

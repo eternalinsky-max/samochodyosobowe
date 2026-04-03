@@ -9,3 +9,4 @@ export default function robots() {
     sitemap: "https://sautom.pl/sitemap.xml",
   };
 }
+

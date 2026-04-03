@@ -10,3 +10,4 @@ export async function loginWithApple() {
 
   return await signInWithPopup(auth, provider);
 }
+

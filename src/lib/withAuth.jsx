@@ -52,3 +52,5 @@ export function withAuth(Wrapped, opts = {}) {
   AuthWrapper.displayName = `withAuth(${Wrapped.displayName || Wrapped.name || 'Component'})`;
   return AuthWrapper;
 }
+
+

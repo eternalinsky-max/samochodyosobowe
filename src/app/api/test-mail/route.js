@@ -33,7 +33,7 @@ export async function GET() {
     const info = await sendMail({
       to: process.env.EMAIL_USER, // пошли сам собі
       subject: '✅ Test Brevo SMTP',
-      text: 'Działa! — Wiadomość testowa z proponujeprace.pl 💙',
+      text: 'Działa! — Wiadomość testowa z sautom.pl 💙',
     });
 
     return NextResponse.json({ ok: true, messageId: info?.messageId || null });
@@ -50,3 +50,5 @@ export async function GET() {
     );
   }
 }
+
+

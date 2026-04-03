@@ -22,7 +22,7 @@ export async function sendMail({ to, replyTo, subject, text, html, fromName }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: `${fromName || 'proponujeprace.pl'} <onboarding@resend.dev>`,
+          from: `${fromName || 'sautom.pl'} <onboarding@resend.dev>`,
           to,
           subject,
           html,
@@ -73,3 +73,5 @@ export async function sendMail({ to, replyTo, subject, text, html, fromName }) {
 
   return { id: null, provider: 'fallback' };
 }
+
+

@@ -271,3 +271,4 @@ export default function CarImagesManager({ carId, initialImages = [] }) {
     </section>
   );
 }
+

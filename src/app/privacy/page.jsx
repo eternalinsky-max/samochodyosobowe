@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Polityka prywatności | proponujeprace.pl',
-  description: 'Dowiedz się, jak portal proponujeprace.pl chroni Twoje dane osobowe i prywatność.',
+  title: 'Polityka prywatności | sautom.pl',
+  description: 'Dowiedz się, jak portal sautom.pl chroni Twoje dane osobowe i prywatność.',
 };
 
 export default function PrivacyPage() {
@@ -10,7 +10,7 @@ export default function PrivacyPage() {
 
       <p className="mb-4">
         Niniejsza polityka prywatności opisuje zasady przetwarzania danych osobowych użytkowników
-        portalu <strong>proponujeprace.pl</strong>.
+        portalu <strong>sautom.pl</strong>.
       </p>
 
       <h2 className="mb-2 mt-8 text-xl font-semibold">1. Administrator danych</h2>
@@ -45,3 +45,5 @@ export default function PrivacyPage() {
     </main>
   );
 }
+
+

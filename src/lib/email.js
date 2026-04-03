@@ -64,3 +64,5 @@ export async function sendMail({ to, subject, text, html }) {
     html,
   });
 }
+
+

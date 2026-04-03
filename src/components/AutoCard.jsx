@@ -52,3 +52,5 @@ export default function AutoCard({ car }) {
     </article>
   );
 }
+
+

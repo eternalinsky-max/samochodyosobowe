@@ -44,3 +44,5 @@ export function captureUtmOnceFromLocation() {
   const utm = parseUtmFromUrl(window.location.href);
   if (Object.keys(utm).length > 0) saveUtm(utm);
 }
+
+

@@ -1,6 +1,6 @@
 {
-  "name": "proponujeprace.pl",
-  "short_name": "proponujeprace",
+  "name": "sautom.pl",
+  "short_name": "sautom",
   "description": "Portal ogłoszeń o pracy w Polsce",
   "start_url": "/",
   "scope": "/",
@@ -20,3 +20,4 @@
     }
   ]
 }
+

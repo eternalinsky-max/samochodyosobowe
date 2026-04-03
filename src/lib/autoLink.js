@@ -58,3 +58,5 @@ export function autoLink(text = "") {
   // 4. XSS-захист (білий список тегів)
   return sanitizeHtml(processed);
 }
+
+

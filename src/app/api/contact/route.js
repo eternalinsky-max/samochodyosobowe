@@ -220,7 +220,7 @@ export async function POST(req) {
 
     // 6) Compose & send
     const to = process.env.SUPPORT_EMAIL || "serwisvans@gmail.com";
-    const subject = `Kontakt z proponujeprace.pl — ${name}`;
+    const subject = `Kontakt z sautom.pl — ${name}`;
     const text = `Imię i nazwisko: ${name}
 Email: ${email}
 IP: ${ip}
@@ -301,3 +301,5 @@ ${message}`;
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
+
+

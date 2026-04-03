@@ -40,3 +40,5 @@ export function useAuthUser() {
 
   return { user, loading };
 }
+
+

@@ -2,10 +2,12 @@
 import ContactForm from './ContactForm';
 
 export const metadata = {
-  title: 'Kontakt | proponujeprace.pl',
-  description: 'Skontaktuj się z zespołem portalu proponujeprace.pl.',
+  title: 'Kontakt | sautom.pl',
+  description: 'Skontaktuj się z zespołem portalu sautom.pl.',
 };
 
 export default function ContactPage() {
   return <ContactForm />;
 }
+
+

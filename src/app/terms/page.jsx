@@ -5,12 +5,12 @@ export const revalidate = 0;
 export default function TermsPage() {
   return (
     <main className="prose mx-auto max-w-3xl px-4 py-10">
-      <h1>Regulamin serwisu proponujeprace.pl</h1>
+      <h1>Regulamin serwisu sautom.pl</h1>
       <p>Ostatnia aktualizacja: {new Date().toISOString().slice(0, 10)}</p>
 
       <h2>1. Postanowienia ogólne</h2>
       <p>
-        Niniejszy regulamin określa zasady korzystania z serwisu proponujeprace.pl. Użytkownik,
+        Niniejszy regulamin określa zasady korzystania z serwisu sautom.pl. Użytkownik,
         rejestrując się lub korzystając z serwisu, akceptuje niniejszy regulamin.
       </p>
 
@@ -35,7 +35,7 @@ export default function TermsPage() {
       <h2>5. Postanowienia końcowe</h2>
       <p>
         Administrator zastrzega sobie prawo do zmiany regulaminu. Aktualna wersja jest zawsze
-        dostępna na stronie proponujeprace.pl/terms.
+        dostępna na stronie sautom.pl/terms.
       </p>
 
       <h2>Kontakt</h2>
@@ -43,3 +43,5 @@ export default function TermsPage() {
     </main>
   );
 }
+
+
