@@ -14,14 +14,7 @@ const MAKES = {
 };
 
 const BODY_TYPES = [
-  "HATCHBACK",
-  "SEDAN",
-  "WAGON",
-  "SUV",
-  "COUPE",
-  "CONVERTIBLE",
-  "VAN",
-  "PICKUP",
+  "HATCHBACK", "SEDAN", "WAGON", "SUV", "COUPE", "CONVERTIBLE", "VAN", "PICKUP",
 ];
 const FUEL_TYPES = ["PETROL", "DIESEL", "HYBRID", "PHEV", "ELECTRIC", "LPG", "CNG"];
 const GEARBOX_TYPES = ["MANUAL", "AUTOMATIC"];
@@ -30,6 +23,8 @@ function toIntOrNull(v) {
   const n = parseInt(v, 10);
   return Number.isFinite(n) ? n : null;
 }
+
+const optionStyle = { backgroundColor: "#0f172a", color: "#f1f5f9" };
 
 export default function PostCarClient() {
   const router = useRouter();
@@ -52,7 +47,6 @@ export default function PostCarClient() {
 
   const models = MAKES[form.make] || [];
 
-  // 🔥 авто‑створення чернетки оголошення
   useEffect(() => {
     async function init() {
       if (!user || createdCarId) return;
@@ -66,9 +60,7 @@ export default function PostCarClient() {
             "content-type": "application/json",
             authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            title: "Nowe ogłoszenie",
-          }),
+          body: JSON.stringify({ title: "Nowe ogłoszenie" }),
         });
 
         const data = await res.json();
@@ -95,7 +87,6 @@ export default function PostCarClient() {
     setForm((p) => ({ ...p, [name]: value }));
   }
 
-  // 🔥 оновлення оголошення (PATCH замість POST)
   async function onSubmit(e) {
     e.preventDefault();
     if (!createdCarId) return;
@@ -171,9 +162,9 @@ export default function PostCarClient() {
               }
               className={select}
             >
-              <option value="">—</option>
+              <option value="" style={optionStyle}>—</option>
               {Object.keys(MAKES).map((m) => (
-                <option key={m}>{m}</option>
+                <option key={m} style={optionStyle}>{m}</option>
               ))}
             </select>
           </div>
@@ -181,9 +172,9 @@ export default function PostCarClient() {
           <div>
             <label className="text-white">Model</label>
             <select name="model" value={form.model} onChange={onChange} className={select}>
-              <option value="">—</option>
+              <option value="" style={optionStyle}>—</option>
               {models.map((m) => (
-                <option key={m}>{m}</option>
+                <option key={m} style={optionStyle}>{m}</option>
               ))}
             </select>
           </div>
@@ -201,9 +192,9 @@ export default function PostCarClient() {
           <div>
             <label className="text-white">Paliwo</label>
             <select name="fuelType" value={form.fuelType} onChange={onChange} className={select}>
-              <option value="">—</option>
+              <option value="" style={optionStyle}>—</option>
               {FUEL_TYPES.map((v) => (
-                <option key={v}>{v}</option>
+                <option key={v} style={optionStyle}>{v}</option>
               ))}
             </select>
           </div>
@@ -211,9 +202,9 @@ export default function PostCarClient() {
           <div>
             <label className="text-white">Skrzynia</label>
             <select name="gearbox" value={form.gearbox} onChange={onChange} className={select}>
-              <option value="">—</option>
+              <option value="" style={optionStyle}>—</option>
               {GEARBOX_TYPES.map((v) => (
-                <option key={v}>{v}</option>
+                <option key={v} style={optionStyle}>{v}</option>
               ))}
             </select>
           </div>
@@ -230,7 +221,6 @@ export default function PostCarClient() {
         </div>
       </form>
 
-      {/* Покажемо менеджер зображень, як тільки створено carId */}
       {createdCarId && <CarImagesManager carId={createdCarId} />}
     </div>
   );

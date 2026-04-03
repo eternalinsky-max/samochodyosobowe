@@ -311,3 +311,11 @@ input[type="radio"] {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(var(--border),1);
 }
+/* =========================================================
+   SELECT OPTION FIX
+========================================================= */
+
+select option {
+  background-color: rgb(16, 21, 34);
+  color: rgb(241, 245, 249);
+}

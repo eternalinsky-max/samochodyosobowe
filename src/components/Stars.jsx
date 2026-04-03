@@ -13,7 +13,7 @@ export default function Stars({
   const current = readOnly ? value : hover || value;
 
   return (
-    <div className={`inline-flex items-center gap-1 ${className}`}>
+    <div className={`inline-flex items-center gap-0.5 ${className}`}>
       {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (
         <button
           key={n}
@@ -23,23 +23,25 @@ export default function Stars({
           onMouseLeave={() => !readOnly && setHover(0)}
           onClick={() => !readOnly && onChange?.(n)}
           disabled={readOnly}
-          className="p-0"
+          className="p-0 transition-transform duration-100"
+          style={{
+            transform: !readOnly && hover >= n ? 'scale(1.2)' : 'scale(1)',
+          }}
           title={`${n}/5`}
         >
           <svg
             width={size}
             height={size}
-            viewBox="0 0 24 24"
-            fill={n <= current ? 'currentColor' : 'none'}
-            stroke="currentColor"
-            className={n <= current ? 'text-amber-500' : 'text-gray-300'}
+            viewBox="0 0 20 20"
+            fill={n <= current ? '#38bdf8' : 'rgba(56,189,248,0.15)'}
+            style={{
+              filter: n <= current
+                ? 'drop-shadow(0 0 4px rgba(56,189,248,0.5))'
+                : 'none',
+              transition: 'fill 0.15s ease, filter 0.15s ease',
+            }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-              d="M11.48 3.5a.56.56 0 011.04 0l1.2 3.42c.08.22.28.37.5.38l3.64.27c.5.04.7.66.32.99l-2.77 2.39c-.17.15-.24.38-.18.59l.83 3.53a.56.56 0 01-.84.62L12.12 14a.56.56 0 00-.59 0L8.42 16.7a.56.56 0 01-.84-.62l.83-3.53a.56.56 0 00-.18-.56L5.46 8.56a.56.56 0 01.32-.99l3.64-.27c.22-.02.42-.17.5-.39l1.56-3.41z"
-            />
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
           </svg>
         </button>
       ))}

@@ -45,12 +45,22 @@ model User {
   photoUrl    String?
   isAdmin     Boolean  @default(false)
 
+  // Рейтинг як продавця (агрегати)
+  ratingWorkerCount      Int?
+  ratingWorkerSum        Int?
+  ratingWorkerAvg        Float?
+  ratingWorkerBayesScore Float?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  ratings     Rating[]
-  comments    Comment[]
-  listings    CarListing[]
+  ratings         Rating[]
+  comments        Comment[]
+  listings        CarListing[]
+  listingRatings  ListingRating[]
+  ratingsGiven    SellerRating[] @relation("RatingGiven")
+  ratingsReceived SellerRating[] @relation("RatingReceived")
+  reviews         Review[]
 }
 
 model CarMake {
@@ -89,7 +99,7 @@ model CarTrim {
   gearbox      GearboxType?
   powerHp      Int?
   engineCc     Int?
-  rangeKm      Int?         // для електро
+  rangeKm      Int?
   basePricePln Int?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -152,8 +162,10 @@ model CarListing {
   city        String?
   phone       String?
   isActive    Boolean  @default(true)
+  isDraft     Boolean  @default(false)
 
   images      CarListingImage[]
+  ratings     ListingRating[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -181,4 +193,54 @@ model CarListingImage {
 
   @@index([listingId])
   @@index([listingId, sortOrder])
+}
+
+model ListingRating {
+  id        String   @id @default(cuid())
+  userId    String
+  listingId String
+  value     Int      // 1..5
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing   CarListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId])
+  @@index([listingId])
+  @@index([userId])
+}
+
+model SellerRating {
+  id         String   @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  value      Int      // 1..5
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  fromUser   User     @relation("RatingGiven", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser     User     @relation("RatingReceived", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+  @@index([toUserId])
+  @@index([fromUserId])
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  authorId      String
+  targetType    String   // "LISTING" | "USER"
+  targetId      String
+  ratingOverall Int      // 1..5
+  text          String   @default("")
+  isHidden      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  User          User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@unique([authorId, targetType, targetId])
+  @@index([targetType, targetId])
+  @@index([authorId])
 }
