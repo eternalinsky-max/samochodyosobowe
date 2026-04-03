@@ -6,18 +6,16 @@ import { headers } from "next/headers";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 
-
-
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata = {
-  metadataBase: new URL("https://samochodyosobowe.pl"),
+  metadataBase: new URL("https://sautom.pl"),
 
-  title: "Samochody osobowe – katalog",
-  description: "Katalog nowych samochodów w Polsce",
+  title: "Sautom – ogłoszenia samochodów w Polsce",
+  description: "Przeglądaj i publikuj ogłoszenia samochodów w Polsce.",
 
   icons: {
     icon: [
@@ -30,25 +28,25 @@ export const metadata = {
   manifest: "/site.webmanifest",
 
   openGraph: {
-    title: "Samochody osobowe – katalog",
-    description: "Katalog nowych samochodów w Polsce",
+    title: "Sautom – ogłoszenia samochodów w Polsce",
+    description: "Przeglądaj i publikuj ogłoszenia samochodów w Polsce.",
     type: "website",
-    url: "https://samochodyosobowe.pl",
-    siteName: "samochodyosobowe.pl",
+    url: "https://sautom.pl",
+    siteName: "sautom.pl",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "samochodyosobowe.pl",
+        alt: "sautom.pl",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Samochody osobowe – katalog",
-    description: "Katalog nowych samochodów w Polsce",
+    title: "Sautom – ogłoszenia samochodów w Polsce",
+    description: "Przeglądaj i publikuj ogłoszenia samochodów w Polsce.",
     images: ["/og-image.png"],
   },
 };

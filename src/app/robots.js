@@ -6,6 +6,6 @@ export default function robots() {
         allow: "/",
       },
     ],
-    sitemap: "https://samochodyosobowe.pl/sitemap.xml",
+    sitemap: "https://sautom.pl/sitemap.xml",
   };
 }
