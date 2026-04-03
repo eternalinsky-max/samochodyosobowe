@@ -3,80 +3,27 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
 const popularBrands = [
-"bmw",
-"audi",
-"mercedes-benz",
-"volkswagen",
-"toyota",
-"skoda",
-"ford",
-"opel",
-"kia",
-"hyundai",
-"renault",
-"peugeot",
-"nissan",
-"mazda",
-"volvo",
-"tesla",
-"dacia",
-"seat"
+  "BMW", "Audi", "Mercedes-Benz", "Volkswagen", "Toyota", "Skoda",
+  "Ford", "Opel", "Kia", "Hyundai", "Renault", "Peugeot",
+  "Nissan", "Mazda", "Volvo", "Tesla", "Dacia", "Seat",
 ];
 
 const otherBrands = [
-"abarth",
-"alfa-romeo",
-"byd",
-"citroen",
-"cupra",
-"ds",
-"fiat",
-"honda",
-"iveco",
-"jaguar",
-"jeep",
-"land-rover",
-"lexus",
-"mini",
-"mitsubishi",
-"polestar",
-"porsche",
-"smart",
-"ssangyong",
-"subaru",
-"suzuki"
+  "Abarth", "Alfa Romeo", "BYD", "Citroen", "Cupra", "DS",
+  "Fiat", "Honda", "Jaguar", "Jeep", "Land Rover", "Lexus",
+  "Mini", "Mitsubishi", "Polestar", "Porsche", "Smart", "Subaru", "Suzuki",
 ];
 
-function BrandGrid({ brands }) {
+function BrandCard({ brand }) {
+  const slug = brand.toLowerCase().replace(/\s+/g, "-");
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))",
-        gap: 16,
-        marginTop: 20
-      }}
+    <Link
+      href={`/cars?make=${encodeURIComponent(brand)}`}
+      className="flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] p-4 text-center text-sm font-semibold uppercase tracking-wide text-white transition hover:border-sky-400/40 hover:bg-sky-400/10 hover:text-sky-400"
     >
-      {brands.map((brand) => (
-        <Link
-          key={brand}
-          href={`/${brand}`}
-          style={{
-            padding: 16,
-            borderRadius: 12,
-            background: "#0f1f3a",
-            textAlign: "center",
-            textTransform: "uppercase",
-            fontWeight: 600
-          }}
-        >
-          {brand}
-        </Link>
-      ))}
-    </div>
+      {brand}
+    </Link>
   );
 }
 
@@ -84,25 +31,18 @@ export default function BrandsPage() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: 20 }}>
-      <h1>Marki samochodów</h1>
+    <div className="mx-auto max-w-6xl px-4 py-10">
+      <h1 className="text-2xl font-semibold text-white mb-6">Marki samochodów</h1>
 
-      <BrandGrid brands={popularBrands} />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        {popularBrands.map((b) => <BrandCard key={b} brand={b} />)}
+        {open && otherBrands.map((b) => <BrandCard key={b} brand={b} />)}
+      </div>
 
-      {open && <BrandGrid brands={otherBrands} />}
-
-      <div style={{ marginTop: 30 }}>
+      <div className="mt-8">
         <button
           onClick={() => setOpen(!open)}
-          style={{
-            padding: "12px 24px",
-            borderRadius: 10,
-            border: "none",
-            background: "#1d4ed8",
-            color: "white",
-            fontWeight: 600,
-            cursor: "pointer"
-          }}
+          className="btn btn-primary"
         >
           {open ? "Pokaż mniej" : "Pokaż więcej"}
         </button>
