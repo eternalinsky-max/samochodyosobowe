@@ -102,3 +102,56 @@ export async function POST(req) {
   }
 }
 
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const q = (searchParams.get('q') || '').trim();
+    const limit = Math.min(Number(searchParams.get('limit') || '10'), 20);
+
+    const where = {
+      isActive: true,
+      ...(q ? {
+        OR: [
+          { title: { contains: q, mode: 'insensitive' } },
+          { make: { contains: q, mode: 'insensitive' } },
+          { model: { contains: q, mode: 'insensitive' } },
+        ],
+      } : {}),
+    };
+
+    const items = await prisma.carListing.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        make: true,
+        model: true,
+        year: true,
+        mileageKm: true,
+        pricePln: true,
+        fuelType: true,
+        gearbox: true,
+        bodyType: true,
+        city: true,
+        images: {
+          take: 1,
+          orderBy: { sortOrder: 'asc' },
+          select: { url: true },
+        },
+      },
+    });
+
+    const result = items.map((c) => ({
+      ...c,
+      coverUrl: c.images?.[0]?.url || null,
+      images: undefined,
+    }));
+
+    return NextResponse.json({ items: result });
+  } catch (error) {
+    console.error('GET /api/cars ERROR:', error);
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  }
+}
