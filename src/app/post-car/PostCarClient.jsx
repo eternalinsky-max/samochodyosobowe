@@ -239,7 +239,21 @@ export default function PostCarClient() {
               ))}
             </select>
           </div>
-
+<div className="sm:col-span-2">
+  <label className="text-white">Opis</label>
+  <textarea
+    name="description"
+    value={form.description}
+    onChange={onChange}
+    rows={6}
+    placeholder="Opisz stan techniczny, historię serwisową, wyposażenie…"
+    className={input}
+    style={{ resize: "vertical" }}
+  />
+  <p className="mt-1 text-xs text-white/40">
+    Linki (np. https://...) będą automatycznie klikalne po zapisaniu.
+  </p>
+</div>
           <div className="sm:col-span-2 flex justify-end pt-3">
             <button
               type="submit"

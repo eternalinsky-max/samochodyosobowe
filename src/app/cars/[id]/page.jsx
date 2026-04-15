@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import { adminAuth } from "@/lib/firebase-admin";
 import CarOwnerActions from "@/components/CarOwnerActions";
 import ReviewSection from "@/components/ReviewSection";
+import { autoLink } from "@/lib/autoLink";
 
 function pln(n) {
   if (n == null) return "—";
@@ -145,7 +146,6 @@ export default async function CarDetailsPage({ params }) {
   const serverUserId = await getServerUserId();
   const isOwner = !!serverUserId && car.userId === serverUserId;
 
-  // Рейтинг оголошення
   const ratingAgg = await prisma.review.aggregate({
     where: { targetType: "LISTING", targetId: car.id, isHidden: false },
     _avg: { ratingOverall: true },
@@ -191,7 +191,6 @@ export default async function CarDetailsPage({ params }) {
           ← Wróć do listy
         </Link>
 
-        {/* Заголовок + зірочки */}
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <h1 className="text-3xl font-semibold text-white">{car.title}</h1>
           {rating && <StarsBadge avg={rating.avg} count={rating.count} />}
@@ -209,7 +208,10 @@ export default async function CarDetailsPage({ params }) {
         </div>
 
         {car.description && (
-          <div className="mt-6 text-white/80">{car.description}</div>
+          <div
+            className="mt-6 text-white/80 leading-relaxed prose prose-invert prose-sm max-w-none prose-a:text-sky-400 prose-a:underline"
+            dangerouslySetInnerHTML={{ __html: autoLink(car.description) }}
+          />
         )}
 
         {isOwner && (
