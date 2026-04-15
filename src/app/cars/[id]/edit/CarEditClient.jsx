@@ -183,9 +183,7 @@ export default function CarEditClient({ car }) {
 
         </div>
 
-        <div className="mt-6 flex gap-3">
-
-        </div>
+        
 
         <div className="mt-6 flex gap-3">
           <button type="submit" className={loading ? btnDisabled : btn}>
