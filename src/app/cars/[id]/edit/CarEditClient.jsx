@@ -172,6 +172,19 @@ export default function CarEditClient({ car }) {
             />
           </Field>
 
+          <Field label="Opis" full>
+            <textarea
+              className={textarea}
+              value={form.description}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              placeholder="Opisz stan techniczny, historię serwisową, wyposażenie…"
+            />
+          </Field>
+
+        </div>
+
+        <div className="mt-6 flex gap-3">
+
         </div>
 
         <div className="mt-6 flex gap-3">
