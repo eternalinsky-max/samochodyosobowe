@@ -44,14 +44,13 @@ const MAKES = {
   Volkswagen: ["Polo", "Golf", "Passat", "Tiguan", "T-Roc", "T-Cross", "Touareg", "ID.3", "ID.4", "ID.5"],
   Volvo: ["S60", "S90", "V60", "V90", "XC40", "XC60", "XC90", "C40"],
 };
-const BODY_TYPES = [
-  "HATCHBACK", "SEDAN", "WAGON", "SUV", "COUPE", "CONVERTIBLE", "VAN", "PICKUP",
-];
+
+const BODY_TYPES = ["HATCHBACK", "SEDAN", "WAGON", "SUV", "COUPE", "CONVERTIBLE", "VAN", "PICKUP"];
 const FUEL_TYPES = ["PETROL", "DIESEL", "HYBRID", "PHEV", "ELECTRIC", "LPG", "CNG"];
 const GEARBOX_TYPES = ["MANUAL", "AUTOMATIC"];
 
 function toIntOrNull(v) {
-  const n = parseInt(v, 10);
+  const n = parseInt(String(v).replace(/\s/g, ""), 10);
   return Number.isFinite(n) ? n : null;
 }
 
@@ -81,10 +80,8 @@ export default function PostCarClient() {
   useEffect(() => {
     async function init() {
       if (!user || createdCarId) return;
-
       try {
         const token = await user.getIdToken(true);
-
         const res = await fetch("/api/cars", {
           method: "POST",
           headers: {
@@ -93,9 +90,7 @@ export default function PostCarClient() {
           },
           body: JSON.stringify({ title: "Nowe ogłoszenie" }),
         });
-
         const data = await res.json();
-
         if (res.ok) {
           setCreatedCarId(data.id);
         } else {
@@ -105,7 +100,6 @@ export default function PostCarClient() {
         console.error("AUTO CREATE ERROR", e);
       }
     }
-
     init();
   }, [user, createdCarId]);
 
@@ -135,10 +129,8 @@ export default function PostCarClient() {
     };
 
     setBusy(true);
-
     try {
       const token = await user.getIdToken(true);
-
       const res = await fetch(`/api/cars/${createdCarId}`, {
         method: "PATCH",
         headers: {
@@ -147,12 +139,10 @@ export default function PostCarClient() {
         },
         body: JSON.stringify(payload),
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data?.error || "Błąd zapisu");
       }
-
       router.push(`/cars/${createdCarId}`);
     } catch (e) {
       alert(e.message);
@@ -212,12 +202,12 @@ export default function PostCarClient() {
 
           <div>
             <label className="text-white">Cena</label>
-            <input name="pricePln" value={form.pricePln} onChange={onChange} className={input} />
+            <input name="pricePln" value={form.pricePln} onChange={onChange} className={input} placeholder="np. 95000" />
           </div>
 
           <div>
             <label className="text-white">Rok</label>
-            <input name="year" value={form.year} onChange={onChange} className={input} />
+            <input name="year" value={form.year} onChange={onChange} className={input} placeholder="np. 2022" />
           </div>
 
           <div>
@@ -239,21 +229,23 @@ export default function PostCarClient() {
               ))}
             </select>
           </div>
-<div className="sm:col-span-2">
-  <label className="text-white">Opis</label>
-  <textarea
-    name="description"
-    value={form.description}
-    onChange={onChange}
-    rows={6}
-    placeholder="Opisz stan techniczny, historię serwisową, wyposażenie…"
-    className={input}
-    style={{ resize: "vertical" }}
-  />
-  <p className="mt-1 text-xs text-white/40">
-    Linki (np. https://...) będą automatycznie klikalne po zapisaniu.
-  </p>
-</div>
+
+          <div className="sm:col-span-2">
+            <label className="text-white">Opis</label>
+            <div
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) =>
+                setForm((p) => ({ ...p, description: e.currentTarget.innerHTML }))
+              }
+              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 text-white px-3 py-2 text-sm"
+              style={{ minHeight: "150px", overflowY: "auto", outline: "none" }}
+            />
+            <p className="mt-1 text-xs text-white/40">
+              Możesz wkleić tekst z <strong className="text-white/40">pogrubieniem</strong> — formatowanie zostanie zachowane.
+            </p>
+          </div>
+
           <div className="sm:col-span-2 flex justify-end pt-3">
             <button
               type="submit"
@@ -270,4 +262,3 @@ export default function PostCarClient() {
     </div>
   );
 }
-

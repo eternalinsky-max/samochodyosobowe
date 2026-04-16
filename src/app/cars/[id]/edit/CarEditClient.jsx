@@ -173,14 +173,17 @@ export default function CarEditClient({ car }) {
           </Field>
 
           <Field label="Opis" full>
-            <textarea
+            <div
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) =>
+                setForm((f) => ({ ...f, description: e.currentTarget.innerHTML }))
+              }
+              dangerouslySetInnerHTML={{ __html: form.description }}
               className={textarea}
-              value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="Opisz stan techniczny, historię serwisową, wyposażenie…"
+              style={{ outline: "none", overflowY: "auto" }}
             />
           </Field>
-
         </div>
 
         
