@@ -208,7 +208,7 @@ export default async function CarDetailsPage({ params }) {
 
         {car.description && (
           <div
-            className="mt-6 text-white/80 leading-relaxed prose prose-invert prose-sm max-w-none prose-a:text-sky-400 prose-a:underline prose-strong:text-white"
+            className="car-description mt-6 leading-relaxed prose prose-invert prose-sm max-w-none"
             dangerouslySetInnerHTML={{ __html: car.description }}
           />
         )}

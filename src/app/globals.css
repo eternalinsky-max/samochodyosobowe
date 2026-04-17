@@ -319,3 +319,30 @@ select option {
   background-color: rgb(16, 21, 34);
   color: rgb(241, 245, 249);
 }
+
+/* =========================================================
+   CAR DESCRIPTION (copied HTML fix)
+========================================================= */
+
+.car-description * {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.car-description b,
+.car-description strong {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.car-description a {
+  color: #38bdf8 !important;
+  text-decoration: underline !important;
+}
+
+.car-description h1,
+.car-description h2,
+.car-description h3 {
+  color: white !important;
+  font-weight: 600 !important;
+}
