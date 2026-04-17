@@ -8,7 +8,6 @@ import prisma from "@/lib/prisma";
 import { adminAuth } from "@/lib/firebase-admin";
 import CarOwnerActions from "@/components/CarOwnerActions";
 import ReviewSection from "@/components/ReviewSection";
-import { autoLink } from "@/lib/autoLink";
 
 function pln(n) {
   if (n == null) return "—";
@@ -113,7 +112,7 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description:
-      car.description?.slice(0, 160) ||
+      car.description?.replace(/<[^>]+>/g, "").slice(0, 160) ||
       `${car.make} ${car.model} ${car.year || ""} – ogłoszenie samochodu.`,
     alternates: { canonical: `https://sautom.pl/cars/${params.id}` },
     openGraph: { title, images: [image] },
@@ -209,8 +208,8 @@ export default async function CarDetailsPage({ params }) {
 
         {car.description && (
           <div
-            className="mt-6 text-white/80 leading-relaxed prose prose-invert prose-sm max-w-none prose-a:text-sky-400 prose-a:underline"
-            dangerouslySetInnerHTML={{ __html: autoLink(car.description) }}
+            className="mt-6 text-white/80 leading-relaxed prose prose-invert prose-sm max-w-none prose-a:text-sky-400 prose-a:underline prose-strong:text-white"
+            dangerouslySetInnerHTML={{ __html: car.description }}
           />
         )}
 
