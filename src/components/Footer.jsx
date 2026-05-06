@@ -6,10 +6,10 @@ export default function SiteFooter() {
   return (
     <footer className="mt-16 border-t bg-gray-900 text-gray-300">
       <div className="mx-auto max-w-6xl px-4 py-10">
-        
+
         {/* TOP */}
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-          
+
           {/* BRAND */}
           <div>
             <p className="text-lg font-semibold text-white">
@@ -68,10 +68,19 @@ export default function SiteFooter() {
           <span>
             Dane mają charakter informacyjny i nie stanowią oferty handlowej.
           </span>
+          <span>
+            Strona stworzona przez{' '}
+            <a
+              href="https://veluxstudio.pl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-sky-400 hover:text-sky-300 transition"
+            >
+              Velux Studio
+            </a>
+          </span>
         </div>
       </div>
     </footer>
   );
 }
-
-
