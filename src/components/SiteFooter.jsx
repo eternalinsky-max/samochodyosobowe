@@ -16,7 +16,6 @@ import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
 function hashString(s) {
-  // простий детермінований хеш (без Math.random / Date.now)
   let h = 0;
   for (let i = 0; i < s.length; i++) {
     h = (h * 31 + s.charCodeAt(i)) | 0;
@@ -28,7 +27,6 @@ export default function SiteFooter() {
   const year = new Date().getFullYear();
   const pathname = usePathname() || '/';
 
-  // 🧠 детермінований вибір іконки за шляхом
   const icons = [Home, Leaf, Briefcase, Handshake, Hammer, Sunrise];
   const Icon = useMemo(() => {
     const idx = hashString(pathname) % icons.length;
@@ -80,18 +78,25 @@ export default function SiteFooter() {
         </div>
       </div>
 
-      {/* детермінований блок — без гідраційних розбіжностей */}
       <div
-        className="flex items-center justify-center gap-2 border-t border-gray-700 py-4 text-center text-sm italic text-gray-400"
+        className="flex flex-wrap items-center justify-center gap-2 border-t border-gray-700 py-4 text-center text-sm italic text-gray-400"
         suppressHydrationWarning
       >
         <Icon className="size-4 text-gray-500" />
+        <span>Cokolwiek czynicie, z duszy wykonujcie...</span>
+        <span className="text-gray-600">·</span>
         <span>
-          Cokolwiek czynicie, z duszy wykonujcie...
-                  </span>
+          Strona stworzona przez{' '}
+          <a
+            href="https://veluxstudio.pl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-sky-400 hover:text-sky-300 not-italic transition"
+          >
+            Velux Studio
+          </a>
+        </span>
       </div>
     </footer>
   );
 }
-
-
