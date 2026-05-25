@@ -14,7 +14,6 @@ export default async function NewsPage() {
   const posts = await prisma.post.findMany({
     where: { published: true },
     orderBy: { createdAt: 'desc' },
-    take: 20,
     select: {
       id: true,
       title: true,
